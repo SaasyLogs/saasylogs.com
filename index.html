@@ -5,19 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Saasy Logs — Salesforce Debug Log Analyzer for Google Sheets</title>
-<meta name="description" content="Turn Salesforce Apex debug logs into a ranked diagnosis: unlogged time gaps, governor limit pressure, and method hotspots by self time. Scrub logs before you share them. Runs entirely inside Google Sheets.">
+<meta name="description" content="Paste an Apex debug log into a Google Sheet and see the path your transaction actually took: every query, DML and method in order, what each one cost, and the unlogged gaps where the time disappeared.">
 <link rel="canonical" href="https://saasylogs.com/">
-<meta name="theme-color" content="#0f111a">
+
+<!-- Two theme-colors so the browser chrome follows the user's system setting. -->
+<meta name="theme-color" content="#faf6f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17120f" media="(prefers-color-scheme: dark)">
 
 <!-- Open Graph / Twitter so shared links preview properly -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://saasylogs.com/">
 <meta property="og:site_name" content="Saasy Logs">
 <meta property="og:title" content="Saasy Logs — Salesforce Debug Log Analyzer for Google Sheets">
-<meta property="og:description" content="Stop scrolling 25 MB of raw log. Get the 10-second gap, the blown CPU limit, and the method that actually ate your transaction — ranked, in a spreadsheet.">
+<meta property="og:description" content="Stop scrolling 25 MB of raw log. See the path your transaction actually took, the blown CPU limit, and the 10-second gap where nothing was logged at all — in a spreadsheet.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Saasy Logs — Salesforce Debug Log Analyzer">
-<meta name="twitter:description" content="Ranked diagnosis of Apex debug logs, inside Google Sheets. Plus a scrubber so you can share logs without leaking customer data.">
+<meta name="twitter:description" content="Apex debug logs, explained in plain English, inside Google Sheets. It tells you where the time went — including the time nothing logged.">
 
 <!--
   Two marks, deliberately. favicon.svg is sunglasses-only: the interlocked SL
@@ -36,17 +39,88 @@
 <meta name="twitter:image" content="https://saasylogs.com/brand/logo-512.png">
 
 <style>
+  /* ============================================================
+     EMBER PALETTE
+
+     Warm greys are brown-based, not blue-based. That is what lets
+     them sit next to the fire ramp without the two reading as
+     separate brands.
+
+       Soot   #17120f   Honey    #fcd34d
+       Ash    #221b17   Marigold #f59e0b
+       Smoke  #3b302a   Copper   #e2622a
+       Stone  #8c7d73   Ember    #c1362b
+       Linen  #e8ded7   Auburn   #8c2318
+       Chalk  #faf6f3
+
+     Brand hues and severity hues are the same family here, so red
+     must not become furniture:
+       - the primary action is COPPER, never red
+       - red stays reserved for ERROR (Ember) and CRITICAL (Auburn)
+       - severity renders as a solid badge, so shape carries the
+         signal before hue does — survives greyscale and colour
+         blindness
+
+     Light is the default. Dark is applied via prefers-color-scheme,
+     so the page follows the reader's system setting with no toggle.
+     ============================================================ */
+
   :root {
-    --bg-main: #0f111a;
-    --bg-card: #161925;
-    --bg-deep: #0b0d15;
-    --accent-blue: #38bdf8;
-    --text-main: #f8fafc;
-    --text-muted: #a3b0c2;
-    --border: #262a3d;
-    --ducky-gold: #fbbf24;
-    --corgi-orange: #fb923c;
-    --dreadnought-red: #f87171;
+    color-scheme: light dark;
+
+    --bg-main:    #faf6f3;   /* Chalk  */
+    --bg-card:    #fffdfb;
+    --bg-deep:    #f2ebe5;
+    --border:     #ddd0c6;
+    --border-soft:#eae0d8;
+
+    --text-main:  #241b16;
+    --text-muted: #6b5a50;
+    /* Stone itself (#8c7d73) only reaches 3.7:1 on Chalk — fine for a border,
+       not for the small print it's used on here. Darkened to clear AA at 4.5. */
+    --text-faint: #75665c;
+
+    --accent:       #c1362b; /* Ember — better contrast on light */
+    --accent-hover: #9e2a21;
+    --on-accent:    #fff5f3;
+    --accent-glow:  rgba(193, 54, 43, .18);
+
+    --sev-crit-bg: #8c2318;  --sev-crit-fg: #ffe8e3;
+    --sev-err-bg:  #c1362b;  --sev-err-fg:  #fff0ed;
+    --sev-warn-bg: #f59e0b;  --sev-warn-fg: #3d2400;
+    --sev-info-bg: #e8ded7;  --sev-info-fg: #5c4d45;
+
+    --now-fg:   #1f6f4a;
+    --next-fg:  #b4530e;
+    --later-fg: #6b5a50;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-main:    #17120f;   /* Soot  */
+      --bg-card:    #221b17;   /* Ash   */
+      --bg-deep:    #120e0b;
+      --border:     #3b302a;   /* Smoke */
+      --border-soft:#2c2420;
+
+      --text-main:  #faf6f3;   /* Chalk */
+      --text-muted: #b6a498;
+      --text-faint: #8c7d73;   /* Stone */
+
+      --accent:       #e2622a; /* Copper — reads better on dark */
+      --accent-hover: #f57d45;
+      --on-accent:    #1f0d04;
+      --accent-glow:  rgba(226, 98, 42, .22);
+
+      --sev-crit-bg: #8c2318;  --sev-crit-fg: #ffe8e3;
+      --sev-err-bg:  #c1362b;  --sev-err-fg:  #fff0ed;
+      --sev-warn-bg: #f59e0b;  --sev-warn-fg: #3d2400;
+      --sev-info-bg: #3b302a;  --sev-info-fg: #cbb9ac;
+
+      --now-fg:   #5cc08d;
+      --next-fg:  #f0a052;
+      --later-fg: #a8978c;
+    }
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -59,15 +133,21 @@
     margin: 0;
   }
 
-  a { color: var(--accent-blue); }
+  a { color: var(--accent); }
 
   :focus-visible {
-    outline: 2px solid var(--accent-blue);
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
     border-radius: 4px;
   }
 
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
 
   /* ---------------- header ---------------- */
 
@@ -82,7 +162,7 @@
     height: 132px;
     border-radius: 26px;
     margin-bottom: 22px;
-    box-shadow: 0 10px 30px -8px rgba(29, 78, 216, .55);
+    box-shadow: 0 10px 30px -8px var(--accent-glow);
   }
 
   h1 {
@@ -94,10 +174,10 @@
   .tagline {
     font-size: 1.15rem;
     color: var(--text-muted);
-    max-width: 620px;
+    max-width: 640px;
     margin: 0 auto 14px;
   }
-  .tagline strong { color: var(--accent-blue); font-weight: 600; }
+  .tagline strong { color: var(--text-main); font-weight: 650; }
 
   .cta-row {
     display: flex; gap: 12px; justify-content: center;
@@ -106,27 +186,43 @@
 
   .cta-btn {
     display: inline-block;
-    background-color: var(--accent-blue);
-    color: #06202b;
+    background-color: var(--accent);
+    color: var(--on-accent);
     padding: 13px 30px;
     font-weight: 700;
     border-radius: 8px;
     text-decoration: none;
     transition: transform .18s ease, background-color .18s ease;
   }
-  .cta-btn:hover { transform: translateY(-2px); background-color: #7dd3fc; }
+  .cta-btn:hover { transform: translateY(-2px); background-color: var(--accent-hover); }
 
   .cta-btn.secondary {
     background: transparent;
     color: var(--text-main);
     border: 1px solid var(--border);
   }
-  .cta-btn.secondary:hover { background: var(--bg-card); border-color: #3b4361; }
+  .cta-btn.secondary:hover { background: var(--bg-card); border-color: var(--text-faint); }
 
   @media (prefers-reduced-motion: reduce) {
-    .cta-btn, .tier-card { transition: none; }
+    .cta-btn, .stage-card { transition: none; }
     .cta-btn:hover { transform: none; }
   }
+
+  /* ---------------- not-yet-installable notice ---------------- */
+
+  .notice {
+    max-width: 660px;
+    margin: 26px auto 0;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: .93rem;
+    color: var(--text-muted);
+    text-align: left;
+  }
+  .notice strong { color: var(--text-main); }
 
   /* ---------------- sections ---------------- */
 
@@ -141,8 +237,35 @@
   .section-sub {
     text-align: center;
     color: var(--text-muted);
-    max-width: 640px;
+    max-width: 660px;
     margin: 0 auto 40px;
+  }
+
+  /* ---------------- the narration ---------------- */
+
+  .story {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 26px 30px;
+    margin-bottom: 30px;
+  }
+  .story-head {
+    font-size: .72rem; letter-spacing: .13em; text-transform: uppercase;
+    color: var(--text-faint); font-weight: 700; margin-bottom: 16px;
+  }
+  .story p {
+    margin: 0 0 14px;
+    font-size: 1.06rem;
+    line-height: 1.6;
+  }
+  .story p:last-child { margin-bottom: 0; }
+  .story .lead { font-weight: 650; color: var(--text-main); }
+  .story .rest { color: var(--text-muted); }
+
+  .story-note {
+    text-align: center; color: var(--text-faint);
+    font-size: .87rem; max-width: 640px; margin: 0 auto 76px;
   }
 
   /* ---------------- sample output ---------------- */
@@ -162,60 +285,72 @@
     border-bottom: 1px solid var(--border);
     font-size: .74rem; letter-spacing: .09em; text-transform: uppercase;
   }
-  .sample td { padding: 9px 12px; border-bottom: 1px solid #171b2a; vertical-align: top; }
+  .sample td { padding: 10px 12px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
   .sample tr:last-child td { border-bottom: 0; }
-  .sample code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .82rem; color: #cbd5e1; }
-  .sev { font-weight: 700; font-size: .74rem; letter-spacing: .06em; white-space: nowrap; }
-  .sev-crit { color: #f87171; }
-  .sev-warn { color: #fbbf24; }
-  .sev-info { color: #7dd3fc; }
+  .sample code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: .82rem; color: var(--text-muted);
+  }
 
-  /* ---------------- tiers ---------------- */
+  /* Severity as a solid badge: shape reads before hue, so it still
+     works in greyscale, in a screenshot, and for colourblind readers. */
+  .sev {
+    display: inline-block;
+    font-weight: 700; font-size: .68rem; letter-spacing: .07em;
+    white-space: nowrap; padding: 3px 9px; border-radius: 4px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  .sev-crit { background: var(--sev-crit-bg); color: var(--sev-crit-fg); }
+  .sev-err  { background: var(--sev-err-bg);  color: var(--sev-err-fg);  }
+  .sev-warn { background: var(--sev-warn-bg); color: var(--sev-warn-fg); }
+  .sev-info { background: var(--sev-info-bg); color: var(--sev-info-fg); }
 
-  .tier-grid {
+  /* ---------------- now / next / later ---------------- */
+
+  .stage-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
     gap: 26px;
     margin-bottom: 72px;
   }
 
-  .tier-card {
+  .stage-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 28px;
-    position: relative;
     transition: border-color .25s ease;
     display: flex; flex-direction: column;
   }
-  .tier-card:hover { border-color: #3b4361; }
-  .tier-card.available { border-color: #1d4ed8; }
+  .stage-card:hover { border-color: var(--text-faint); }
+  .stage-card.is-now { border-color: var(--accent); }
 
-  .flag {
-    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
-    background: var(--accent-blue); color: #06202b;
-    font-size: .68rem; font-weight: 800; letter-spacing: .1em;
-    padding: 4px 12px; border-radius: 99px; text-transform: uppercase;
-    white-space: nowrap;
+  .stage-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 2px; }
+  .stage-name.now   { color: var(--now-fg); }
+  .stage-name.next  { color: var(--next-fg); }
+  .stage-name.later { color: var(--later-fg); }
+
+  .stage-sub {
+    font-size: .8rem; font-weight: 600; margin-bottom: 20px;
+    color: var(--text-faint);
+    letter-spacing: .05em; text-transform: uppercase;
   }
-
-  .tier-badge { font-size: 3rem; line-height: 1; display: block; margin-bottom: 12px; text-align: center; }
-  .tier-name { font-size: 1.3rem; font-weight: 700; text-align: center; }
-  .tier-price {
-    font-size: .84rem; font-weight: 600; margin-bottom: 20px;
-    text-align: center; color: var(--text-muted);
-    letter-spacing: .04em; text-transform: uppercase;
-  }
-
-  .duck-color  { color: var(--ducky-gold); }
-  .corgi-color { color: var(--corgi-orange); }
-  .dread-color { color: var(--dreadnought-red); }
 
   .feature-list { list-style: none; padding: 0; margin: 0; color: var(--text-muted); font-size: .93rem; }
-  .feature-list li { margin-bottom: 13px; display: flex; align-items: flex-start; gap: 9px; }
-  .feature-list li::before { content: "✓"; color: var(--accent-blue); font-weight: 700; flex-shrink: 0; }
+
+  /* The marker is absolutely positioned rather than a flex sibling. As flex
+     items, <strong> and the text after it became separate columns and the
+     bullet text laid out in two narrow stacks. This keeps the content inline. */
+  .feature-list li { margin-bottom: 13px; position: relative; padding-left: 22px; }
+  .feature-list li::before {
+    content: "✓"; color: var(--now-fg); font-weight: 700;
+    position: absolute; left: 0; top: 0;
+  }
   .feature-list strong { color: var(--text-main); font-weight: 600; }
-  .feature-list li.planned::before { content: "○"; color: #64748b; }
+  .feature-list code { white-space: nowrap; }
+
+  .stage-card.is-next .feature-list li::before  { content: "→"; color: var(--next-fg); }
+  .stage-card.is-later .feature-list li::before { content: "○"; color: var(--later-fg); }
 
   /* ---------------- legal ---------------- */
 
@@ -231,7 +366,7 @@
   .legal-section p { color: var(--text-muted); }
   .legal-section p:last-child { margin-bottom: 0; }
   .legal-section strong { color: var(--text-main); }
-  .updated { font-size: .8rem; color: #64748b; margin-top: 20px !important; }
+  .updated { font-size: .8rem; color: var(--text-faint); margin-top: 20px !important; }
 
   /* ---------------- footer ---------------- */
 
@@ -259,55 +394,93 @@
   <h1>SAASY LOGS</h1>
 
   <p class="tagline">
-    Salesforce Apex debug log analysis in Google Sheets. Stop scrolling 25&nbsp;MB of
-    raw text — get <strong>the gap that ate your transaction</strong>, ranked first.
+    Paste an Apex debug log into a Google Sheet. You get
+    <strong>the path your transaction actually took</strong>: what it touched, what
+    each step cost, and where the time went when nothing was logged at all. Not the
+    path you'd guess from reading the code. The one that ran.
   </p>
 
   <div class="cta-row">
     <a href="#status" class="cta-btn">See what works today</a>
-    <a href="mailto:support@saasylogs.com?subject=Saasy%20Logs%20early%20access" class="cta-btn secondary">Ask for early access</a>
+    <a href="https://salesforcegirl.hashnode.dev/" class="cta-btn secondary">Read the blog</a>
   </div>
+
+  <p class="notice">
+    <strong>It's in beta, which here means: email me and I'll set you up.</strong>
+    The Marketplace listing is in progress and I'd rather not pretend otherwise.
+    <a href="mailto:support@saasylogs.com?subject=Saasy%20Logs%20beta%20access">Ask
+    for access</a> — and if you have a log that breaks it, send me that instead.
+    That's how the last three bugs got found.
+  </p>
 </header>
 
 <main>
   <div class="wrap">
 
+    <h2 class="section-title">It talks back</h2>
+    <p class="section-sub">
+      The log already knows what happened. It just won't say it in a sentence.
+      Every tool I've used, including the two versions of this one I wrote before,
+      hands you a tidier list of events — and a list has no row for
+      "and then eleven seconds passed."
+    </p>
+
+    <div class="story">
+      <div class="story-head">What happened</div>
+      <p class="lead">
+        10.40&nbsp;s — 60% of the whole transaction — is unlogged time, between
+        SOQL_EXECUTE_END and DML_BEGIN.
+      </p>
+      <p class="rest">
+        Overall, 96% of the elapsed time has no log line explaining it.
+      </p>
+      <p class="rest">
+        2 updates cost 5.13&nbsp;s across 5 rows; the slowest single one took
+        4.63&nbsp;s. That span includes every trigger, flow and validation the save
+        set off — not just the write.
+      </p>
+    </div>
+
+    <p class="story-note">
+      Real output from a real 25&nbsp;MB production log. Those two log lines sit
+      next to each other in the file. I'd scrolled past them for years.
+    </p>
+
     <h2 class="section-title">A diagnosis, not a data dump</h2>
     <p class="section-sub">
       A debug log will happily tell you 168,000 things. Almost none of them matter.
-      Saasy Logs ranks what does — here's real output from a 25&nbsp;MB log that blew
-      its CPU limit.
+      Underneath the summary you get the shortlist.
     </p>
 
     <div class="sample">
       <table>
-        <caption class="sr-only" style="position:absolute;left:-9999px">Example ranked findings from a debug log</caption>
+        <caption class="sr-only">Example ranked findings from a debug log</caption>
         <thead>
           <tr><th scope="col">Severity</th><th scope="col">Finding</th><th scope="col">Where</th></tr>
         </thead>
         <tbody>
           <tr>
-            <td class="sev sev-crit">CRITICAL</td>
+            <td><span class="sev sev-crit">CRITICAL</span></td>
             <td>CPU time exceeded: 30,064 of 25,000 (120%)</td>
             <td><code>namespace (default)</code></td>
           </tr>
           <tr>
-            <td class="sev sev-crit">ERROR</td>
+            <td><span class="sev sev-err">ERROR</span></td>
             <td>System.LimitException: Apex CPU time limit exceeded</td>
             <td><code>findTriggerRelations</code>, Apex line 22 — 5 occurrences</td>
           </tr>
           <tr>
-            <td class="sev sev-warn">WARN</td>
+            <td><span class="sev sev-warn">WARN</span></td>
+            <td>10.40 s unlogged gap (60% of transaction)</td>
+            <td>between <code>SOQL_EXECUTE_END</code> and <code>DML_BEGIN</code></td>
+          </tr>
+          <tr>
+            <td><span class="sev sev-warn">WARN</span></td>
             <td>Log is incomplete — Salesforce discarded 35.8 MB</td>
             <td>Timings across the skip are unreliable</td>
           </tr>
           <tr>
-            <td class="sev sev-warn">WARN</td>
-            <td>8.88 s unlogged gap (3% of transaction)</td>
-            <td><code>line 113,890</code>, between VALIDATION_PASS and managed package</td>
-          </tr>
-          <tr>
-            <td class="sev sev-info">INFO</td>
+            <td><span class="sev sev-info">INFO</span></td>
             <td>104.5 s self time in <code>updateTasks</code></td>
             <td>25 calls · 125 s total · 25 DML — DML inside a loop</td>
           </tr>
@@ -317,47 +490,51 @@
 
     <h2 class="section-title" id="status">Where the project actually is</h2>
     <p class="section-sub">
-      One tier works today. The other two are honest roadmap, not shipping product —
-      marked with ○ below.
+      <em>Now</em> is what I've run against a real log in a real spreadsheet.
+      <em>Next</em> is what I'm building. <em>Later</em> is a wish list, and wish
+      lists are free.
     </p>
 
-    <div class="tier-grid">
+    <div class="stage-grid">
 
-      <div class="tier-card available">
-        <span class="flag">Working today</span>
-        <span class="tier-badge" role="img" aria-label="Rubber duck">🦆</span>
-        <div class="tier-name duck-color">Rubber Ducky Edition</div>
-        <div class="tier-price">Free forever</div>
+      <div class="stage-card is-now">
+        <div class="stage-name now">Now</div>
+        <div class="stage-sub">Working and verified</div>
         <ul class="feature-list">
-          <li><strong>Ranked findings:</strong> exceptions, blown governor limits and the biggest unlogged time gaps, sorted by what will actually help you</li>
-          <li><strong>Self-time hotspots:</strong> which method burned the time, excluding its children, across every call</li>
-          <li class="planned"><strong>Log scrubber:</strong> strip record IDs, emails and field values before you paste a log into a ticket</li>
-          <li>Honest about incomplete logs — flags Salesforce truncation instead of inventing timings</li>
-          <li>Paste-only by design: no Drive permission requested, nothing leaves your spreadsheet</li>
+          <li><strong>A summary in sentences.</strong> Rubber duck debugging, except the duck goes first.</li>
+          <li><strong>Unlogged gaps, ranked.</strong> Time your log doesn't account for. Nothing shows you this, because technically nothing happened.</li>
+          <li><strong>The shortlist.</strong> Fatal errors, blown governor limits, and how close each namespace got.</li>
+          <li><strong>The execution path.</strong> Every query, DML and method in the order it ran, nested so you can see what called what, with its own timing next to it.</li>
+          <li><strong>Self-time hotspots.</strong> Which method burned the time, not counting its children.</li>
+          <li><strong>It admits when the log is incomplete.</strong> Salesforce throws away chunks of big logs. You get told, rather than getting confident maths done on the leftovers.</li>
+          <li><strong>Scrubbed output.</strong> Record IDs, emails and field values are stripped out of the analysis.</li>
+          <li><strong>No Drive permission. At all.</strong> It can only see the sheet you opened it from. That was the whole design, and it cost me some features.</li>
         </ul>
       </div>
 
-      <div class="tier-card">
-        <span class="tier-badge" role="img" aria-label="Dog">🐶</span>
-        <div class="tier-name corgi-color">Corgi Pro Edition</div>
-        <div class="tier-price">Planned</div>
+      <div class="stage-card is-next">
+        <div class="stage-name next">Next</div>
+        <div class="stage-sub">Being built now</div>
         <ul class="feature-list">
-          <li class="planned">Batch folder parsing straight from Google Drive</li>
-          <li class="planned">Custom noise filters and saved analysis profiles</li>
-          <li class="planned">Colour-coded exception traces and clear/append control</li>
-          <li class="planned">Scrub profiles for regulated orgs</li>
+          <li><strong>The Marketplace listing,</strong> so you can install it normally instead of emailing me.</li>
+          <li><strong>A scrub button.</strong> Hands back a clean copy of the log itself, for pasting into a ticket.</li>
+          <li><strong>Before and after.</strong> Two logs of the same transaction, so you can tell whether your fix did anything.</li>
+          <li><strong>Async honesty.</strong> Future calls and queueable jobs run as separate transactions with their own logs. Right now the tool measures a fraction and doesn't mention it. That's not great.</li>
+          <li><strong>Naming the package.</strong> When the missing time belongs to a managed package, say which one instead of shrugging.</li>
         </ul>
       </div>
 
-      <div class="tier-card">
-        <span class="tier-badge" role="img" aria-label="Ship">🚢</span>
-        <div class="tier-name dread-color">Dreadnought Edition</div>
-        <div class="tier-price">Planned</div>
+      <div class="stage-card is-later">
+        <div class="stage-name later">Later</div>
+        <div class="stage-sub">Wanted, not started</div>
         <ul class="feature-list">
-          <li class="planned"><strong>Cross-log analysis:</strong> rank methods by self time across twenty logs, not one — find the pattern a single log can't show</li>
-          <li class="planned">Governor limit trends over many transactions</li>
-          <li class="planned">Chunked handling of very large logs</li>
-          <li class="planned">Team licensing for consultancies</li>
+          <li><strong>Benchmarks you can keep.</strong> Capture a baseline, change something, run it again, and find out whether you helped. Then keep those runs as a suite. Most orgs have no performance regression testing at all — usually because nobody left knows what normal looked like.</li>
+          <li><strong>Watch for one thing.</strong> You got the <code>101</code> email at 9am, so say that up front and have the analysis lead with it. Or look at flows and ignore triggers. Or search the whole log, not just the <code>USER_DEBUG</code> lines.</li>
+          <li><strong>Twenty logs at once,</strong> to find the pattern one log can't show you.</li>
+          <li><strong>Putting a transaction back together</strong> after Salesforce shattered it across several logs.</li>
+          <li><strong>Query fingerprinting,</strong> for chasing <code>Too many SOQL queries: 101</code> back to the line that keeps running.</li>
+          <li><strong>Enormous logs,</strong> in chunks, instead of hitting the paste ceiling and giving up.</li>
+          <li><strong>Something visual.</strong> No promises about when.</li>
         </ul>
       </div>
 
@@ -382,7 +559,7 @@
         which your data could exist. Anything you paste stays in your spreadsheet and
         is yours to delete.
       </p>
-      <p class="updated">Last updated 11 August 2026 · Questions: <a href="mailto:support@saasylogs.com">support@saasylogs.com</a></p>
+      <p class="updated">Last updated 13 September 2026 · Questions: <a href="mailto:support@saasylogs.com">support@saasylogs.com</a></p>
     </section>
 
     <section class="legal-section" id="terms">
@@ -402,7 +579,7 @@
         Not affiliated with, endorsed by, or sponsored by Salesforce, Inc. or Google
         LLC. Salesforce, Apex and related marks are trademarks of Salesforce, Inc.
       </p>
-      <p class="updated">Last updated 11 August 2026</p>
+      <p class="updated">Last updated 13 September 2026</p>
     </section>
 
   </div>
@@ -411,11 +588,12 @@
 <footer>
   <nav aria-label="Footer">
     <a href="#status">Status</a>
+    <a href="https://salesforcegirl.hashnode.dev/">Blog</a>
     <a href="#privacy">Privacy</a>
     <a href="#terms">Terms</a>
     <a href="mailto:support@saasylogs.com">Support</a>
   </nav>
-  <p>&copy; 2026 Saasy Logs. Built by a Salesforce developer who spent too long in debug logs.</p>
+  <p>&copy; 2026 Saasy Logs. Built by a Salesforce developer who has read too many debug logs and is doing something about it.</p>
 </footer>
 
 </body>
