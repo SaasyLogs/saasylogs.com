@@ -31,16 +31,22 @@
   contrast from the tile instead, at 8.65:1. The glasses left the logo — they covered the S's crossing and
   the L's spine, and letters cannot wear sunglasses and still be letters.
   .ico is listed last as a fallback for browsers that ignore SVG icons.
+
+  ?v=2 on every icon URL. Browsers cache favicons far more aggressively than
+  anything else on a page - often past a hard reload, sometimes indefinitely -
+  so the blue mark survived the recolour on machines that had already seen it.
+  Bump the number whenever an icon changes; it is the only reliable way to
+  reach somebody who already has the old one.
 -->
-<link rel="icon" type="image/svg+xml" href="/brand/favicon.svg">
-<link rel="apple-touch-icon" href="/brand/favicon-180.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png">
-<link rel="icon" href="/brand/favicon.ico" sizes="any">
-<meta property="og:image" content="https://saasylogs.com/brand/logo-512.png">
+<link rel="icon" type="image/svg+xml" href="/brand/favicon.svg?v=2">
+<link rel="apple-touch-icon" href="/brand/favicon-180.png?v=2">
+<link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png?v=2">
+<link rel="icon" href="/brand/favicon.ico?v=2" sizes="any">
+<meta property="og:image" content="https://saasylogs.com/brand/logo-512.png?v=2">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
 <meta property="og:image:alt" content="Saasy Logs logo: interlocked S and L monogram">
-<meta name="twitter:image" content="https://saasylogs.com/brand/logo-512.png">
+<meta name="twitter:image" content="https://saasylogs.com/brand/logo-512.png?v=2">
 
 <style>
   /* ============================================================
@@ -395,7 +401,7 @@
 <body>
 
 <header>
-  <img class="logo" src="/brand/logo.svg" width="132" height="132"
+  <img class="logo" src="/brand/logo.svg?v=2" width="132" height="132"
        alt="Saasy Logs logo: interlocked S and L monogram">
 
   <h1>SAASY LOGS</h1>
@@ -527,6 +533,7 @@
         <div class="stage-sub">Being built now</div>
         <ul class="feature-list">
           <li><strong>The Marketplace listing,</strong> so you can install it normally instead of emailing me.</li>
+          <li><strong>Open a log file instead of pasting it.</strong> The paste box is the ceiling, not the parser — a browser textarea gives up long before Apps Script does. Reading the file directly removes that, and still asks for no Drive permission.</li>
           <li><strong>Query fingerprinting.</strong> Eighty-seven queries that differ only by a bind value are one bug, not eighty-seven — that part works. What's left is arriving from a <code>101</code> email and finding the answer already at the top.</li>
           <li><strong>Before and after.</strong> Two logs of the same transaction, so you can tell whether your fix did anything.</li>
           <li><strong>Async honesty.</strong> Future calls and queueable jobs run as separate transactions with their own logs. Right now the tool measures a fraction and doesn't mention it. That's not great.</li>
@@ -542,7 +549,7 @@
           <li><strong>Watch for one thing.</strong> You got the <code>101</code> email at 9am, so say that up front and have the analysis lead with it. Or look at flows and ignore triggers. Or search the whole log, not just the <code>USER_DEBUG</code> lines.</li>
           <li><strong>Twenty logs at once,</strong> to find the pattern one log can't show you.</li>
           <li><strong>Putting a transaction back together</strong> after Salesforce shattered it across several logs.</li>
-          <li><strong>Enormous logs,</strong> in chunks, instead of hitting the paste ceiling and giving up.</li>
+          <li><strong>Enormous logs,</strong> in chunks. File upload raises the ceiling; chunking is what removes it.</li>
           <li><strong>Something visual.</strong> No promises about when.</li>
         </ul>
       </div>
