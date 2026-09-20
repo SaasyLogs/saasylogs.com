@@ -1,31 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Saasy Logs logo: interlocked S and L wearing aviator sunglasses">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Saasy Logs logo: SL monogram">
   <title>Saasy Logs</title>
+  <!--
+    LOGO — 64px and up. favicon.svg is the small mark.
 
-  <rect width="512" height="512" rx="96" fill="#4a90d9"/>
+    Marigold tile, Copper keyline, Chalk letters. Every colour is FIXED.
 
-  <!-- Interlocked SL monogram. Stroke-based so weight stays even at any size. -->
-  <g fill="none" stroke="#ffffff" stroke-width="66" stroke-linecap="butt" stroke-linejoin="miter">
-    <!-- L: vertical spine with a foot to the right -->
-    <path d="M 322 108 L 322 372 L 452 372"/>
-    <!-- S: fat geometric S overlapping the L's spine -->
-    <path d="M 286 130 C 214 106 118 122 118 186 C 118 246 214 250 262 262 C 316 275 332 312 306 350 C 280 388 178 392 118 366"/>
-  </g>
+    An earlier version switched the letters with prefers-color-scheme so they
+    matched the page. Randi, 19 Sept: "lets control the font color so we dont
+    see random background colors form whatever site it might appear on."
+    Right — this file gets rendered by Google, Slack, LinkedIn and every email
+    client on backgrounds none of us choose, and a mark that changes depending
+    on where it lands is a mark nobody can recognise. It looks the same
+    everywhere now, including places that never read a media query at all.
 
-  <!-- Aviator sunglasses -->
-  <g fill="#0b0d15">
-    <!-- brow bar -->
-    <rect x="52" y="222" width="408" height="22" rx="11"/>
-    <!-- bridge -->
-    <path d="M 214 240 C 232 226 280 226 298 240 L 298 258 C 280 248 232 248 214 258 Z"/>
-    <!-- left lens -->
-    <path d="M 66 238 H 216 L 200 306 C 193 336 170 354 141 354 C 112 354 88 335 81 305 L 66 244 Z"/>
-    <!-- right lens -->
-    <path d="M 446 238 H 296 L 312 306 C 319 336 342 354 371 354 C 400 354 424 335 431 305 L 446 244 Z"/>
-  </g>
+    THE LETTERS ARE OUTLINES, NOT <text>. A logo that needs the viewer to have
+    a font installed renders differently on every machine. Drawn from
+    DejaVu Serif Bold, chosen from a side-by-side against Liberation Serif.
+    EB Garamond was the first choice and Merriweather the second; neither is
+    installed and apt needs root. Drop either .ttf/.otf into brand/ and only
+    the two <path> elements below regenerate — nothing else in this file moves.
 
-  <!-- Specular highlight on the left lens -->
-  <g stroke="#ffffff" stroke-opacity="0.5" stroke-width="13" stroke-linecap="round" fill="none">
-    <path d="M 98 262 L 128 306"/>
-    <path d="M 122 258 L 146 294"/>
+    NOTE the contrast: Chalk on Marigold is 2.00:1. The letterforms are heavy
+    enough to carry it at 128px and up, which is what this file is for. The
+    small mark does NOT inherit it — favicon.svg is Soot on Marigold at 8.65:1,
+    because at 16px weight stops compensating for contrast.
+
+    No sunglasses: they covered the S's crossing and the L's spine. They are
+    the whole mark in favicon.svg, where they have the pixels to themselves.
+  -->
+
+  <!-- Keyline inset by half its own width so it sits inside the viewBox. -->
+  <rect x="10" y="10" width="492" height="492" rx="92"
+        fill="#f59e0b" stroke="#e2622a" stroke-width="20"/>
+
+  <g fill="#faf6f3">
+      <path transform="translate(91.21 337.65) scale(0.10953 -0.10953)" d="M158 72V426H285Q314 258 422.0 175.0Q530 92 721 92Q876 92 957.0 151.0Q1038 210 1038 324Q1038 414 983.0 464.0Q928 514 756 557L532 612Q313 668 224.0 767.5Q135 867 135 1051Q135 1273 282.5 1396.5Q430 1520 696 1520Q827 1520 968.5 1498.0Q1110 1476 1262 1432V1102H1135Q1106 1256 1008.0 1327.5Q910 1399 729 1399Q581 1399 505.5 1347.5Q430 1296 430 1194Q430 1101 482.0 1052.5Q534 1004 737 952L961 897Q1169 845 1262.5 735.0Q1356 625 1356 432Q1356 206 1200.0 88.5Q1044 -29 741 -29Q595 -29 451.0 -4.0Q307 21 158 72Z"/>
+      <path transform="translate(253.21 337.65) scale(0.10953 -0.10953)" d="M96 0V121H287V1372H96V1493H864V1372H672V137H1260V373H1395V0Z"/>
   </g>
 </svg>

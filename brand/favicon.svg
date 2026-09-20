@@ -5,15 +5,21 @@
 
     The interlocked SL and the sunglasses compete for the same pixels, so at
     16-32px the full mark turns to mush: the letters stop reading and you get
-    an indistinct blue blob. The sunglasses are the distinctive half of the
+    an indistinct blob. The sunglasses are the distinctive half of the
     identity, so the favicon keeps those alone, scaled up to fill the tile.
     Recognisable in a tab strip at 16px, still on-brand next to logo.svg.
+
+    Soot shades on a Marigold tile, not the logo's Marigold-on-Ember-keyline:
+    a 4% keyline is sub-pixel at 32px and turns to mush, so the small mark
+    takes its contrast from the tile instead. 8.65:1, and the brand colour is
+    the thing you actually see in a tab strip. Trello #15 - different problem
+    at this size, so a different answer.
   -->
-  <rect width="512" height="512" rx="88" fill="#4a90d9"/>
+  <rect width="512" height="512" rx="88" fill="#f59e0b"/>
 
   <!-- Inset and optically centred so the lenses clear the rounded corners -->
   <g transform="translate(256 246) scale(0.84) translate(-256 -256)">
-  <g fill="#0b0d15">
+  <g fill="#17120f">
     <!-- brow bar -->
     <rect x="28" y="176" width="456" height="42" rx="21"/>
     <!-- bridge -->

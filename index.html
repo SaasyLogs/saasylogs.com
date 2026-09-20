@@ -23,9 +23,13 @@
 <meta name="twitter:description" content="Apex debug logs, explained in plain English, inside Google Sheets. It tells you where the time went — including the time nothing logged.">
 
 <!--
-  Two marks, deliberately. favicon.svg is sunglasses-only: the interlocked SL
-  and the glasses compete for the same pixels, so the full mark is illegible
-  below ~48px. logo.svg is the full monogram, used in the header below.
+  Two marks, deliberately. logo.svg is the SL monogram — Marigold with an
+  Ember keyline baked into the file, because Google, Slack and LinkedIn all
+  render it on backgrounds of their own and CSS reaches none of them.
+  favicon.svg is the sunglasses alone, Soot on a Marigold tile: at 16-32px a
+  4% keyline is sub-pixel and turns to mush, so the small mark takes its
+  contrast from the tile instead, at 8.65:1. The glasses left the logo — they covered the S's crossing and
+  the L's spine, and letters cannot wear sunglasses and still be letters.
   .ico is listed last as a fallback for browsers that ignore SVG icons.
 -->
 <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg">
@@ -35,7 +39,7 @@
 <meta property="og:image" content="https://saasylogs.com/brand/logo-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
-<meta property="og:image:alt" content="Saasy Logs logo: interlocked S and L wearing aviator sunglasses">
+<meta property="og:image:alt" content="Saasy Logs logo: interlocked S and L monogram">
 <meta name="twitter:image" content="https://saasylogs.com/brand/logo-512.png">
 
 <style>
@@ -160,7 +164,10 @@
   .logo {
     width: 132px;
     height: 132px;
-    border-radius: 26px;
+    /* No border-radius here any more: the tile and its copper keyline are
+       drawn inside logo.svg, so a CSS radius clipped the corners of a shape
+       that already had its own. The file has to carry them regardless —
+       Google, Slack and LinkedIn render it without this stylesheet. */
     margin-bottom: 22px;
     box-shadow: 0 10px 30px -8px var(--accent-glow);
   }
@@ -389,7 +396,7 @@
 
 <header>
   <img class="logo" src="/brand/logo.svg" width="132" height="132"
-       alt="Saasy Logs logo: interlocked S and L wearing aviator sunglasses">
+       alt="Saasy Logs logo: interlocked S and L monogram">
 
   <h1>SAASY LOGS</h1>
 
@@ -504,10 +511,13 @@
           <li><strong>A summary in sentences.</strong> Rubber duck debugging, except the duck goes first.</li>
           <li><strong>Unlogged gaps, ranked.</strong> Time your log doesn't account for. Nothing shows you this, because technically nothing happened.</li>
           <li><strong>The shortlist.</strong> Fatal errors, blown governor limits, and how close each namespace got.</li>
-          <li><strong>The execution path.</strong> Every query, DML and method in the order it ran, nested so you can see what called what, with its own timing next to it.</li>
+          <li><strong>The execution path.</strong> Every query, DML and method in the order it ran, nested so you can see what called what, with its own timing next to it. Filter it by trigger, class, method or object without re-running anything.</li>
+          <li><strong>The automation you didn't know was running.</strong> Workflow rules, flows, validation rules and triggers, told apart and named. Most people debugging a flow are reading the wrong file.</li>
+          <li><strong>Flow faults.</strong> When a flow takes its fault path, that's one line in a hundred thousand. It leads the summary instead of hiding in them.</li>
           <li><strong>Self-time hotspots.</strong> Which method burned the time, not counting its children.</li>
-          <li><strong>It admits when the log is incomplete.</strong> Salesforce throws away chunks of big logs. You get told, rather than getting confident maths done on the leftovers.</li>
-          <li><strong>Scrubbed output.</strong> Record IDs, emails and field values are stripped out of the analysis.</li>
+          <li><strong>It admits when the log is incomplete.</strong> Salesforce throws away chunks of big logs, and a log can stop before its transaction does. You get told, rather than getting confident maths done on the leftovers.</li>
+          <li><strong>A scrub button.</strong> Hands back a clean copy of the log itself, for the ticket or the vendor. You pick what it keeps.</li>
+          <li><strong>It tells you what's in there before you share it.</strong> The analysis is <em>not</em> scrubbed — it's your log and you're the one reading it. So the summary counts the emails, addresses and personal fields it found, and you decide.</li>
           <li><strong>No Drive permission. At all.</strong> It can only see the sheet you opened it from. That was the whole design, and it cost me some features.</li>
         </ul>
       </div>
@@ -517,7 +527,7 @@
         <div class="stage-sub">Being built now</div>
         <ul class="feature-list">
           <li><strong>The Marketplace listing,</strong> so you can install it normally instead of emailing me.</li>
-          <li><strong>A scrub button.</strong> Hands back a clean copy of the log itself, for pasting into a ticket.</li>
+          <li><strong>Query fingerprinting.</strong> Eighty-seven queries that differ only by a bind value are one bug, not eighty-seven — that part works. What's left is arriving from a <code>101</code> email and finding the answer already at the top.</li>
           <li><strong>Before and after.</strong> Two logs of the same transaction, so you can tell whether your fix did anything.</li>
           <li><strong>Async honesty.</strong> Future calls and queueable jobs run as separate transactions with their own logs. Right now the tool measures a fraction and doesn't mention it. That's not great.</li>
           <li><strong>Naming the package.</strong> When the missing time belongs to a managed package, say which one instead of shrugging.</li>
@@ -532,7 +542,6 @@
           <li><strong>Watch for one thing.</strong> You got the <code>101</code> email at 9am, so say that up front and have the analysis lead with it. Or look at flows and ignore triggers. Or search the whole log, not just the <code>USER_DEBUG</code> lines.</li>
           <li><strong>Twenty logs at once,</strong> to find the pattern one log can't show you.</li>
           <li><strong>Putting a transaction back together</strong> after Salesforce shattered it across several logs.</li>
-          <li><strong>Query fingerprinting,</strong> for chasing <code>Too many SOQL queries: 101</code> back to the line that keeps running.</li>
           <li><strong>Enormous logs,</strong> in chunks, instead of hitting the paste ceiling and giving up.</li>
           <li><strong>Something visual.</strong> No promises about when.</li>
         </ul>
@@ -556,13 +565,13 @@
       </p>
       <p>
         We operate no server and hold no account for you, so no data of yours ever
-        reaches us. One thing worth naming precisely rather than glossing over: so
-        that you can re-run an analysis without re-pasting a large log, the text you
-        paste is held in <strong>Google's per-document cache — inside your own
-        account, attached to that spreadsheet — for up to 6 hours</strong>, and is
-        then discarded. Nothing else is stored, and nothing is transmitted anywhere.
+        reaches us. <strong>Nothing is stored, anywhere, for any length of
+        time</strong> — not on a server, not in a cache, not between runs. An
+        earlier version held your pasted text in Google's per-document cache for
+        six hours so that you could re-run without re-pasting; that feature has
+        since been removed, and the cache went with it.
       </p>
-      <p class="updated">Last updated 14 September 2026 · Questions: <a href="mailto:support@saasylogs.com">support@saasylogs.com</a></p>
+      <p class="updated">Last updated 19 September 2026 · Questions: <a href="mailto:support@saasylogs.com">support@saasylogs.com</a></p>
     </section>
 
     <section class="legal-section" id="terms">
