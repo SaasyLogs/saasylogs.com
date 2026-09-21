@@ -48,394 +48,7 @@
 <meta property="og:image:alt" content="Saasy Logs logo: interlocked S and L monogram">
 <meta name="twitter:image" content="https://saasylogs.com/brand/logo-512.png?v=2">
 
-<style>
-  /* ============================================================
-     EMBER PALETTE
-
-     Warm greys are brown-based, not blue-based. That is what lets
-     them sit next to the fire ramp without the two reading as
-     separate brands.
-
-       Soot   #17120f   Honey    #fcd34d
-       Ash    #221b17   Marigold #f59e0b
-       Smoke  #3b302a   Copper   #e2622a
-       Stone  #8c7d73   Ember    #c1362b
-       Linen  #e8ded7   Auburn   #8c2318
-       Chalk  #faf6f3
-
-     Brand hues and severity hues are the same family here, so red
-     must not become furniture:
-       - the primary action is COPPER, never red
-       - red stays reserved for ERROR (Ember) and CRITICAL (Auburn)
-       - severity renders as a solid badge, so shape carries the
-         signal before hue does — survives greyscale and colour
-         blindness
-
-     Light is the default. Dark is applied via prefers-color-scheme,
-     so the page follows the reader's system setting with no toggle.
-     ============================================================ */
-
-  :root {
-    color-scheme: light dark;
-
-    --bg-main:    #faf6f3;   /* Chalk  */
-    --bg-card:    #fffdfb;
-    --bg-deep:    #f2ebe5;
-    --border:     #ddd0c6;
-    --border-soft:#eae0d8;
-
-    --text-main:  #241b16;
-    --text-muted: #6b5a50;
-    /* Stone itself (#8c7d73) only reaches 3.7:1 on Chalk — fine for a border,
-       not for the small print it's used on here. Darkened to clear AA at 4.5. */
-    --text-faint: #75665c;
-
-    --accent:       #c1362b; /* Ember — better contrast on light */
-    --accent-hover: #9e2a21;
-    --on-accent:    #fff5f3;
-    --accent-glow:  rgba(193, 54, 43, .18);
-
-    --sev-crit-bg: #8c2318;  --sev-crit-fg: #ffe8e3;
-    --sev-err-bg:  #c1362b;  --sev-err-fg:  #fff0ed;
-    --sev-warn-bg: #f59e0b;  --sev-warn-fg: #3d2400;
-    --sev-info-bg: #e8ded7;  --sev-info-fg: #5c4d45;
-
-    --now-fg:   #1f6f4a;
-    --next-fg:  #b4530e;
-    --later-fg: #6b5a50;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg-main:    #17120f;   /* Soot  */
-      --bg-card:    #221b17;   /* Ash   */
-      --bg-deep:    #120e0b;
-      --border:     #3b302a;   /* Smoke */
-      --border-soft:#2c2420;
-
-      --text-main:  #faf6f3;   /* Chalk */
-      --text-muted: #b6a498;
-      --text-faint: #8c7d73;   /* Stone */
-
-      --accent:       #e2622a; /* Copper — reads better on dark */
-      --accent-hover: #f57d45;
-      --on-accent:    #1f0d04;
-      --accent-glow:  rgba(226, 98, 42, .22);
-
-      --sev-crit-bg: #8c2318;  --sev-crit-fg: #ffe8e3;
-      --sev-err-bg:  #c1362b;  --sev-err-fg:  #fff0ed;
-      --sev-warn-bg: #f59e0b;  --sev-warn-fg: #3d2400;
-      --sev-info-bg: #3b302a;  --sev-info-fg: #cbb9ac;
-
-      --now-fg:   #5cc08d;
-      --next-fg:  #f0a052;
-      --later-fg: #a8978c;
-    }
-  }
-
-  *, *::before, *::after { box-sizing: border-box; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-main);
-    color: var(--text-main);
-    line-height: 1.65;
-    margin: 0;
-  }
-
-  a { color: var(--accent); }
-
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
-
-  .sr-only {
-    position: absolute; width: 1px; height: 1px;
-    padding: 0; margin: -1px; overflow: hidden;
-    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-  }
-
-  /* ---------------- header ---------------- */
-
-  header {
-    text-align: center;
-    padding: 64px 20px 48px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo {
-    width: 132px;
-    height: 132px;
-    /* No border-radius here any more: the tile and its copper keyline are
-       drawn inside logo.svg, so a CSS radius clipped the corners of a shape
-       that already had its own. The file has to carry them regardless —
-       Google, Slack and LinkedIn render it without this stylesheet. */
-    margin-bottom: 22px;
-    box-shadow: 0 10px 30px -8px var(--accent-glow);
-  }
-
-  /* Titles in the logo's face. The monogram is drawn from DejaVu Serif Bold,
-     so the stack asks for that first and falls back to Georgia - which is on
-     nearly every machine, was one of the four candidates, and is the closest
-     widely-installed relative. No webfont: a 350 KB download to set six
-     headings is a bad trade on a page this size. */
-  h1, h2, .section-title, .stage-name, .legal-section h3 {
-    font-family: "DejaVu Serif", Georgia, "Times New Roman", serif;
-    font-weight: 700;
-  }
-
-  h1 {
-    font-size: clamp(2rem, 6vw, 2.6rem);
-    margin: 8px 0 12px;
-    letter-spacing: -.03em;
-  }
-
-  .kicker {
-    font-family: "DejaVu Serif", Georgia, "Times New Roman", serif;
-    font-size: 1.05rem; font-style: italic;
-    color: var(--accent); margin: 0 0 14px;
-  }
-  .tagline {
-    font-size: 1.15rem;
-    color: var(--text-muted);
-    max-width: 640px;
-    margin: 0 auto 14px;
-  }
-  .tagline strong { color: var(--text-main); font-weight: 650; }
-
-  .scope {
-    max-width: 640px; margin: 0 auto 26px;
-    font-size: .92rem; color: var(--text-muted); line-height: 1.6;
-  }
-
-
-  .cta-row {
-    display: flex; gap: 12px; justify-content: center;
-    flex-wrap: wrap; margin-top: 28px;
-  }
-
-  .cta-btn {
-    display: inline-block;
-    background-color: var(--accent);
-    color: var(--on-accent);
-    padding: 13px 30px;
-    font-weight: 700;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: transform .18s ease, background-color .18s ease;
-  }
-  .cta-btn:hover { transform: translateY(-2px); background-color: var(--accent-hover); }
-
-  .cta-btn.secondary {
-    background: transparent;
-    color: var(--text-main);
-    border: 1px solid var(--border);
-  }
-  .cta-btn.secondary:hover { background: var(--bg-card); border-color: var(--text-faint); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .cta-btn, .stage-card { transition: none; }
-    .cta-btn:hover { transform: none; }
-  }
-
-  /* ---------------- not-yet-installable notice ---------------- */
-
-  .notice {
-    max-width: 660px;
-    margin: 26px auto 0;
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    background: var(--bg-card);
-    border-radius: 8px;
-    padding: 14px 18px;
-    font-size: .93rem;
-    color: var(--text-muted);
-    text-align: left;
-  }
-  .notice strong { color: var(--text-main); }
-
-  /* ---------------- sections ---------------- */
-
-  main { padding: 60px 0 20px; }
-
-  .section-title {
-    text-align: center;
-    font-size: 1.6rem;
-    margin: 0 0 10px;
-    letter-spacing: -.02em;
-  }
-  .section-sub {
-    text-align: center;
-    color: var(--text-muted);
-    max-width: 660px;
-    margin: 0 auto 40px;
-  }
-
-  /* ---------------- the narration ---------------- */
-
-  .story {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 26px 30px;
-    margin-bottom: 30px;
-  }
-  .story-head {
-    font-size: .72rem; letter-spacing: .13em; text-transform: uppercase;
-    color: var(--text-faint); font-weight: 700; margin-bottom: 16px;
-  }
-  .story p {
-    margin: 0 0 14px;
-    font-size: 1.06rem;
-    line-height: 1.6;
-  }
-  .story p:last-child { margin-bottom: 0; }
-  .story .lead { font-weight: 650; color: var(--text-main); }
-  .story .rest { color: var(--text-muted); }
-
-  .story-note {
-    text-align: center; color: var(--text-faint);
-    font-size: .87rem; max-width: 640px; margin: 0 auto 76px;
-  }
-
-  /* ---------------- sample output ---------------- */
-
-  .sample {
-    background: var(--bg-deep);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 20px;
-    overflow-x: auto;
-    margin-bottom: 76px;
-  }
-  .sample table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: .86rem; }
-  .sample th {
-    text-align: left; padding: 6px 12px 10px;
-    color: var(--text-muted); font-weight: 600;
-    border-bottom: 1px solid var(--border);
-    font-size: .74rem; letter-spacing: .09em; text-transform: uppercase;
-  }
-  .sample td { padding: 10px 12px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
-  .sample tr:last-child td { border-bottom: 0; }
-  .sample code {
-    font-family: "SF Mono", Menlo, Consolas, monospace;
-    font-size: .82rem; color: var(--text-muted);
-  }
-
-  /* The trace sample. Tighter rows than the findings table because the point
-     is the shape of the path, not the prose in any one row. */
-  .sample table.trace { min-width: 660px; font-size: .82rem; }
-  .sample table.trace td { padding: 7px 12px; }
-  .sample table.trace .num { text-align: right; font-variant-numeric: tabular-nums;
-                             font-family: "SF Mono", Menlo, Consolas, monospace; }
-  .sample table.trace th.num { text-align: right; }
-  .sample table.trace tr.hot td { background: var(--accent-glow); }
-  .sample table.trace tr.hot .num { font-weight: 700; color: var(--accent); }
-  .k {
-    display: inline-block; font-size: .66rem; letter-spacing: .07em;
-    text-transform: uppercase; font-weight: 700; padding: 2px 7px;
-    border-radius: 4px; background: var(--bg-card); border: 1px solid var(--border);
-    color: var(--text-muted); white-space: nowrap;
-  }
-  .k-trig { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .k-wf   { background: var(--sev-warn-bg); border-color: var(--sev-warn-bg); color: var(--sev-warn-fg); }
-
-  /* Severity as a solid badge: shape reads before hue, so it still
-     works in greyscale, in a screenshot, and for colourblind readers. */
-  .sev {
-    display: inline-block;
-    font-weight: 700; font-size: .68rem; letter-spacing: .07em;
-    white-space: nowrap; padding: 3px 9px; border-radius: 4px;
-    font-family: "SF Mono", Menlo, Consolas, monospace;
-  }
-  .sev-crit { background: var(--sev-crit-bg); color: var(--sev-crit-fg); }
-  .sev-err  { background: var(--sev-err-bg);  color: var(--sev-err-fg);  }
-  .sev-warn { background: var(--sev-warn-bg); color: var(--sev-warn-fg); }
-  .sev-info { background: var(--sev-info-bg); color: var(--sev-info-fg); }
-
-  /* ---------------- now / next / later ---------------- */
-
-  .stage-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 26px;
-    margin-bottom: 72px;
-  }
-
-  .stage-card {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    transition: border-color .25s ease;
-    display: flex; flex-direction: column;
-  }
-  .stage-card:hover { border-color: var(--text-faint); }
-  .stage-card.is-now { border-color: var(--accent); }
-
-  .stage-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 2px; }
-  .stage-name.now   { color: var(--now-fg); }
-  .stage-name.next  { color: var(--next-fg); }
-  .stage-name.later { color: var(--later-fg); }
-
-  .stage-sub {
-    font-size: .8rem; font-weight: 600; margin-bottom: 20px;
-    color: var(--text-faint);
-    letter-spacing: .05em; text-transform: uppercase;
-  }
-
-  .feature-list { list-style: none; padding: 0; margin: 0; color: var(--text-muted); font-size: .93rem; }
-
-  /* The marker is absolutely positioned rather than a flex sibling. As flex
-     items, <strong> and the text after it became separate columns and the
-     bullet text laid out in two narrow stacks. This keeps the content inline. */
-  .feature-list li { margin-bottom: 13px; position: relative; padding-left: 22px; }
-  .feature-list li::before {
-    content: "✓"; color: var(--now-fg); font-weight: 700;
-    position: absolute; left: 0; top: 0;
-  }
-  .feature-list strong { color: var(--text-main); font-weight: 600; }
-  .feature-list code { white-space: nowrap; }
-
-  .stage-card.is-next .feature-list li::before  { content: "→"; color: var(--next-fg); }
-  .stage-card.is-later .feature-list li::before { content: "○"; color: var(--later-fg); }
-
-  /* ---------------- legal ---------------- */
-
-  .legal-section {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 34px;
-    margin-bottom: 26px;
-    scroll-margin-top: 24px;
-  }
-  .legal-section h3 { margin-top: 0; font-size: 1.15rem; }
-  .legal-section p { color: var(--text-muted); }
-  .legal-section p:last-child { margin-bottom: 0; }
-  .legal-section strong { color: var(--text-main); }
-  .updated { font-size: .8rem; color: var(--text-faint); margin-top: 20px !important; }
-
-  /* ---------------- footer ---------------- */
-
-  footer {
-    background-color: var(--bg-deep);
-    padding: 34px 20px;
-    text-align: center;
-    font-size: .9rem;
-    color: var(--text-muted);
-    border-top: 1px solid var(--border);
-    margin-top: 50px;
-  }
-  footer nav { margin-bottom: 12px; }
-  footer nav a { margin: 0 10px; text-decoration: none; }
-  footer nav a:hover { text-decoration: underline; }
-  footer p { margin: 6px 0; }
-</style>
+<link rel="stylesheet" href="/styles.css?v=1">
 </head>
 <body>
 
@@ -489,26 +102,27 @@
 
     <div class="sample">
       <table class="trace">
-        <caption class="sr-only">Excerpt of a trace, inside CPQQuoteLineTrigger</caption>
+        <caption class="sr-only">Excerpt of a trace, inside a trigger</caption>
         <thead>
           <tr><th>Kind</th><th>Class</th><th>Method</th><th>Object</th><th class="num">ms</th></tr>
         </thead>
         <tbody>
-          <tr><td><span class="k k-trig">Trigger</span></td><td><code>—</code></td><td><code>—</code></td><td>QuoteLine</td><td class="num">178.6</td></tr>
-          <tr><td><span class="k">Method</span></td><td><code>TriggerDispatcher</code></td><td><code>Run(ITriggerHandler)</code></td><td>QuoteLine</td><td class="num">176.7</td></tr>
-          <tr class="hot"><td><span class="k">Method</span></td><td><code>CPQQuoteLineTriggerHandler</code></td><td><code>IsDisabled()</code></td><td>QuoteLine</td><td class="num">62.4</td></tr>
-          <tr><td><span class="k">Method</span></td><td><code>TriggerHandlerUtility</code></td><td><code>findTriggerRelations(Id, Id)</code></td><td>QuoteLine</td><td class="num">59.8</td></tr>
-          <tr><td><span class="k k-wf">Workflow</span></td><td><code>—</code></td><td><code>Update Net Total ×4</code></td><td>Quote Line</td><td class="num"></td></tr>
+          <tr><td><span class="k k-trig">Trigger</span></td><td><code>—</code></td><td><code>—</code></td><td>OrderItem</td><td class="num">178.6</td></tr>
+          <tr><td><span class="k">Method</span></td><td><code>TriggerRouter</code></td><td><code>Run(IHandler)</code></td><td>OrderItem</td><td class="num">176.7</td></tr>
+          <tr class="hot"><td><span class="k">Method</span></td><td><code>OrderItemHandler</code></td><td><code>IsDisabled()</code></td><td>OrderItem</td><td class="num">62.4</td></tr>
+          <tr><td><span class="k">Method</span></td><td><code>HandlerSettings</code></td><td><code>findRelatedSettings(Id, Id)</code></td><td>OrderItem</td><td class="num">59.8</td></tr>
+          <tr><td><span class="k k-wf">Workflow</span></td><td><code>—</code></td><td><code>Recalculate Order Total ×4</code></td><td>OrderItem</td><td class="num"></td></tr>
         </tbody>
       </table>
     </div>
 
     <p class="story-note">
-      Real rows from a real log, inside <code>CPQQuoteLineTrigger</code>. Two things
-      fall out of it that the code cannot tell you: a third of the trigger’s runtime
-      goes on <code>IsDisabled()</code> — checking whether it should run at all — and a
-      workflow rule fired four times on the way past. Nobody debugging that trigger
-      was looking at a workflow rule.
+      Real timings, real shape, from a production log — the class names are
+      invented, because the originals belonged to somebody’s org. Two things fall
+      out of it that no amount of reading the code would: a third of the trigger’s
+      runtime goes on <code>IsDisabled()</code>, checking whether it should run at
+      all, and a workflow rule fired four times on the way past. Nobody debugging
+      that trigger was looking at a workflow rule.
     </p>
 
     <h2 class="section-title">A diagnosis, not a data dump</h2>
@@ -532,7 +146,7 @@
           <tr>
             <td><span class="sev sev-err">ERROR</span></td>
             <td>System.LimitException: Apex CPU time limit exceeded</td>
-            <td><code>findTriggerRelations</code>, Apex line 22 — 5 occurrences</td>
+            <td><code>findRelatedSettings</code>, Apex line 22 — 5 occurrences</td>
           </tr>
           <tr>
             <td><span class="sev sev-warn">WARN</span></td>
@@ -546,7 +160,7 @@
           </tr>
           <tr>
             <td><span class="sev sev-info">INFO</span></td>
-            <td>104.5 s self time in <code>updateTasks</code></td>
+            <td>104.5 s self time in <code>updateChildRecords</code></td>
             <td>25 calls · 125 s total · 25 DML — DML inside a loop</td>
           </tr>
         </tbody>
