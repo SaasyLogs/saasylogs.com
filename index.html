@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Saasy Logs — Salesforce Debug Log Analyzer for Google Sheets</title>
-<meta name="description" content="Paste an Apex debug log into a Google Sheet and see the path your transaction actually took: every query, DML and method in order, what each one cost, and the unlogged gaps where the time disappeared.">
+<meta name="description" content="Paste a Salesforce Apex debug log into a Google Sheet and read the route your transaction actually drove: every trigger, flow, workflow rule and class it hit, in order, on the records it touched.">
 <link rel="canonical" href="https://saasylogs.com/">
 
 <!-- Two theme-colors so the browser chrome follows the user's system setting. -->
@@ -17,10 +17,10 @@
 <meta property="og:url" content="https://saasylogs.com/">
 <meta property="og:site_name" content="Saasy Logs">
 <meta property="og:title" content="Saasy Logs — Salesforce Debug Log Analyzer for Google Sheets">
-<meta property="og:description" content="Stop scrolling 25 MB of raw log. See the path your transaction actually took, the blown CPU limit, and the 10-second gap where nothing was logged at all — in a spreadsheet.">
+<meta property="og:description" content="Stop scrolling 25 MB of raw log. See which triggers, flows and workflow rules actually ran, in what order, on which records — in a spreadsheet.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Saasy Logs — Salesforce Debug Log Analyzer">
-<meta name="twitter:description" content="Apex debug logs, explained in plain English, inside Google Sheets. It tells you where the time went — including the time nothing logged.">
+<meta name="twitter:description" content="Salesforce Apex debug logs, read back as the path your transaction actually took — triggers, flows, workflow rules and classes, in the order they ran.">
 
 <!--
   Two marks, deliberately. logo.svg is the SL monogram — Marigold with an
@@ -178,12 +178,27 @@
     box-shadow: 0 10px 30px -8px var(--accent-glow);
   }
 
+  /* Titles in the logo's face. The monogram is drawn from DejaVu Serif Bold,
+     so the stack asks for that first and falls back to Georgia - which is on
+     nearly every machine, was one of the four candidates, and is the closest
+     widely-installed relative. No webfont: a 350 KB download to set six
+     headings is a bad trade on a page this size. */
+  h1, h2, .section-title, .stage-name, .legal-section h3 {
+    font-family: "DejaVu Serif", Georgia, "Times New Roman", serif;
+    font-weight: 700;
+  }
+
   h1 {
     font-size: clamp(2rem, 6vw, 2.6rem);
     margin: 8px 0 12px;
     letter-spacing: -.03em;
   }
 
+  .kicker {
+    font-family: "DejaVu Serif", Georgia, "Times New Roman", serif;
+    font-size: 1.05rem; font-style: italic;
+    color: var(--accent); margin: 0 0 14px;
+  }
   .tagline {
     font-size: 1.15rem;
     color: var(--text-muted);
@@ -191,6 +206,12 @@
     margin: 0 auto 14px;
   }
   .tagline strong { color: var(--text-main); font-weight: 650; }
+
+  .scope {
+    max-width: 640px; margin: 0 auto 26px;
+    font-size: .92rem; color: var(--text-muted); line-height: 1.6;
+  }
+
 
   .cta-row {
     display: flex; gap: 12px; justify-content: center;
@@ -305,6 +326,24 @@
     font-size: .82rem; color: var(--text-muted);
   }
 
+  /* The trace sample. Tighter rows than the findings table because the point
+     is the shape of the path, not the prose in any one row. */
+  .sample table.trace { min-width: 660px; font-size: .82rem; }
+  .sample table.trace td { padding: 7px 12px; }
+  .sample table.trace .num { text-align: right; font-variant-numeric: tabular-nums;
+                             font-family: "SF Mono", Menlo, Consolas, monospace; }
+  .sample table.trace th.num { text-align: right; }
+  .sample table.trace tr.hot td { background: var(--accent-glow); }
+  .sample table.trace tr.hot .num { font-weight: 700; color: var(--accent); }
+  .k {
+    display: inline-block; font-size: .66rem; letter-spacing: .07em;
+    text-transform: uppercase; font-weight: 700; padding: 2px 7px;
+    border-radius: 4px; background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text-muted); white-space: nowrap;
+  }
+  .k-trig { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .k-wf   { background: var(--sev-warn-bg); border-color: var(--sev-warn-bg); color: var(--sev-warn-fg); }
+
   /* Severity as a solid badge: shape reads before hue, so it still
      works in greyscale, in a screenshot, and for colourblind readers. */
   .sev {
@@ -406,11 +445,22 @@
 
   <h1>SAASY LOGS</h1>
 
+  <p class="kicker">We find the SaaS in your logs.</p>
+
   <p class="tagline">
-    Paste an Apex debug log into a Google Sheet. You get
-    <strong>the path your transaction actually took</strong>: what it touched, what
-    each step cost, and where the time went when nothing was logged at all. Not the
-    path you'd guess from reading the code. The one that ran.
+    Your code is the map, the log is <strong>the path that was actually
+    taken</strong>. The problem is the output is hard to read. There are many
+    paths it can take, and getting a clear view of the route shouldn't be hard.
+    Saasy&nbsp;Logs is the key to that map. It decodes the path taken and tells
+    you every stop along the way — every trigger, flow, workflow rule,
+    validation and class it hit, in the order it hit them, on the records it
+    touched. Salesforce writes all of it down and then makes it unreadable.
+    Paste one into a Google Sheet and read it back.
+  </p>
+
+  <p class="scope">
+    Salesforce Apex debug logs, specifically — not affiliated with, endorsed by,
+    or sponsored by Salesforce,&nbsp;Inc.
   </p>
 
   <div class="cta-row">
@@ -420,7 +470,6 @@
 
   <p class="notice">
     <strong>It's in beta, which here means: email me and I'll set you up.</strong>
-    The Marketplace listing is in progress and I'd rather not pretend otherwise.
     <a href="mailto:support@saasylogs.com?subject=Saasy%20Logs%20beta%20access">Ask
     for access</a> — and if you have a log that breaks it, send me that instead.
     That's how the last three bugs got found.
@@ -430,33 +479,36 @@
 <main>
   <div class="wrap">
 
-    <h2 class="section-title">It talks back</h2>
+    <h2 class="section-title">Every stop along the way</h2>
     <p class="section-sub">
-      The log already knows what happened. It just won't say it in a sentence.
-      Every tool I've used, including the two versions of this one I wrote before,
-      hands you a tidier list of events — and a list has no row for
-      "and then eleven seconds passed."
+      This is the part no amount of reading the code will give you. Your repo says
+      what <em>can</em> run. The log says what <em>did</em> — in order, with the
+      handler that called it and the record it ran against, so you can filter to
+      one trigger, one class or one object and watch the rest fall away.
     </p>
 
-    <div class="story">
-      <div class="story-head">What happened</div>
-      <p class="lead">
-        10.40&nbsp;s — 60% of the whole transaction — is unlogged time, between
-        SOQL_EXECUTE_END and DML_BEGIN.
-      </p>
-      <p class="rest">
-        Overall, 96% of the elapsed time has no log line explaining it.
-      </p>
-      <p class="rest">
-        2 updates cost 5.13&nbsp;s across 5 rows; the slowest single one took
-        4.63&nbsp;s. That span includes every trigger, flow and validation the save
-        set off — not just the write.
-      </p>
+    <div class="sample">
+      <table class="trace">
+        <caption class="sr-only">Excerpt of a trace, inside CPQQuoteLineTrigger</caption>
+        <thead>
+          <tr><th>Kind</th><th>Class</th><th>Method</th><th>Object</th><th class="num">ms</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="k k-trig">Trigger</span></td><td><code>—</code></td><td><code>—</code></td><td>QuoteLine</td><td class="num">178.6</td></tr>
+          <tr><td><span class="k">Method</span></td><td><code>TriggerDispatcher</code></td><td><code>Run(ITriggerHandler)</code></td><td>QuoteLine</td><td class="num">176.7</td></tr>
+          <tr class="hot"><td><span class="k">Method</span></td><td><code>CPQQuoteLineTriggerHandler</code></td><td><code>IsDisabled()</code></td><td>QuoteLine</td><td class="num">62.4</td></tr>
+          <tr><td><span class="k">Method</span></td><td><code>TriggerHandlerUtility</code></td><td><code>findTriggerRelations(Id, Id)</code></td><td>QuoteLine</td><td class="num">59.8</td></tr>
+          <tr><td><span class="k k-wf">Workflow</span></td><td><code>—</code></td><td><code>Update Net Total ×4</code></td><td>Quote Line</td><td class="num"></td></tr>
+        </tbody>
+      </table>
     </div>
 
     <p class="story-note">
-      Real output from a real 25&nbsp;MB production log. Those two log lines sit
-      next to each other in the file. I'd scrolled past them for years.
+      Real rows from a real log, inside <code>CPQQuoteLineTrigger</code>. Two things
+      fall out of it that the code cannot tell you: a third of the trigger’s runtime
+      goes on <code>IsDisabled()</code> — checking whether it should run at all — and a
+      workflow rule fired four times on the way past. Nobody debugging that trigger
+      was looking at a workflow rule.
     </p>
 
     <h2 class="section-title">A diagnosis, not a data dump</h2>
@@ -501,6 +553,33 @@
       </table>
     </div>
 
+    <h2 class="section-title">And it says so out loud</h2>
+    <p class="section-sub">
+      The log already knows all of this. It just won't say it in a sentence.
+      A list of events has no row for "and then eleven seconds passed."
+    </p>
+
+    <div class="story">
+      <div class="story-head">What happened</div>
+      <p class="lead">
+        10.40&nbsp;s — 60% of the whole transaction — is unlogged time, between
+        SOQL_EXECUTE_END and DML_BEGIN.
+      </p>
+      <p class="rest">
+        Overall, 96% of the elapsed time has no log line explaining it.
+      </p>
+      <p class="rest">
+        2 updates cost 5.13&nbsp;s across 5 rows; the slowest single one took
+        4.63&nbsp;s. That span includes every trigger, flow and validation the save
+        set off — not just the write.
+      </p>
+    </div>
+
+    <p class="story-note">
+      Real output from a real 25&nbsp;MB production log. Those two log lines sit
+      next to each other in the file. I'd scrolled past them for years.
+    </p>
+
     <h2 class="section-title" id="status">Where the project actually is</h2>
     <p class="section-sub">
       <em>Now</em> is what I've run against a real log in a real spreadsheet.
@@ -514,17 +593,13 @@
         <div class="stage-name now">Now</div>
         <div class="stage-sub">Working and verified</div>
         <ul class="feature-list">
-          <li><strong>A summary in sentences.</strong> Rubber duck debugging, except the duck goes first.</li>
-          <li><strong>Unlogged gaps, ranked.</strong> Time your log doesn't account for. Nothing shows you this, because technically nothing happened.</li>
-          <li><strong>The shortlist.</strong> Fatal errors, blown governor limits, and how close each namespace got.</li>
-          <li><strong>The execution path.</strong> Every query, DML and method in the order it ran, nested so you can see what called what, with its own timing next to it. Filter it by trigger, class, method or object without re-running anything.</li>
-          <li><strong>The automation you didn't know was running.</strong> Workflow rules, flows, validation rules and triggers, told apart and named. Most people debugging a flow are reading the wrong file.</li>
-          <li><strong>Flow faults.</strong> When a flow takes its fault path, that's one line in a hundred thousand. It leads the summary instead of hiding in them.</li>
-          <li><strong>Self-time hotspots.</strong> Which method burned the time, not counting its children.</li>
-          <li><strong>It admits when the log is incomplete.</strong> Salesforce throws away chunks of big logs, and a log can stop before its transaction does. You get told, rather than getting confident maths done on the leftovers.</li>
-          <li><strong>A scrub button.</strong> Hands back a clean copy of the log itself, for the ticket or the vendor. You pick what it keeps.</li>
-          <li><strong>It tells you what's in there before you share it.</strong> The analysis is <em>not</em> scrubbed — it's your log and you're the one reading it. So the summary counts the emails, addresses and personal fields it found, and you decide.</li>
-          <li><strong>No Drive permission. At all.</strong> It can only see the sheet you opened it from. That was the whole design, and it cost me some features.</li>
+          <li><strong>The route, in order.</strong> Triggers, flows, workflow rules, validations, classes.</li>
+          <li><strong>Filter without re-running.</strong> By trigger, class, method, object or limit type.</li>
+          <li><strong>A summary in sentences.</strong> The duck goes first.</li>
+          <li><strong>The shortlist.</strong> Fatal errors, blown limits, unlogged gaps, hotspots — ranked.</li>
+          <li><strong>Honest about holes.</strong> It says when the log is incomplete.</li>
+          <li><strong>Scrub before you share.</strong> You choose what it keeps.</li>
+          <li><strong>No Drive permission.</strong> Just the sheet you opened it from.</li>
         </ul>
       </div>
 
@@ -532,12 +607,11 @@
         <div class="stage-name next">Next</div>
         <div class="stage-sub">Being built now</div>
         <ul class="feature-list">
-          <li><strong>The Marketplace listing,</strong> so you can install it normally instead of emailing me.</li>
-          <li><strong>Open a log file instead of pasting it.</strong> The paste box is the ceiling, not the parser — a browser textarea gives up long before Apps Script does. Reading the file directly removes that, and still asks for no Drive permission.</li>
-          <li><strong>Query fingerprinting.</strong> Eighty-seven queries that differ only by a bind value are one bug, not eighty-seven — that part works. What's left is arriving from a <code>101</code> email and finding the answer already at the top.</li>
-          <li><strong>Before and after.</strong> Two logs of the same transaction, so you can tell whether your fix did anything.</li>
-          <li><strong>Async honesty.</strong> Future calls and queueable jobs run as separate transactions with their own logs. Right now the tool measures a fraction and doesn't mention it. That's not great.</li>
-          <li><strong>Naming the package.</strong> When the missing time belongs to a managed package, say which one instead of shrugging.</li>
+          <li><strong>The Marketplace listing.</strong> Install it the normal way.</li>
+          <li><strong>Open a file.</strong> Instead of pasting one.</li>
+          <li><strong>The 101 hunt.</strong> Which query keeps running, and who calls it.</li>
+          <li><strong>Async hand-offs.</strong> Where the trail leaves this log.</li>
+          <li><strong>Name the managed package.</strong> Whose code the missing time belongs to.</li>
         </ul>
       </div>
 
@@ -545,14 +619,15 @@
         <div class="stage-name later">Later</div>
         <div class="stage-sub">Wanted, not started</div>
         <ul class="feature-list">
-          <li><strong>Benchmarks you can keep.</strong> Capture a baseline, change something, run it again, and find out whether you helped. Then keep those runs as a suite. Most orgs have no performance regression testing at all — usually because nobody left knows what normal looked like.</li>
-          <li><strong>Watch for one thing.</strong> You got the <code>101</code> email at 9am, so say that up front and have the analysis lead with it. Or look at flows and ignore triggers. Or search the whole log, not just the <code>USER_DEBUG</code> lines.</li>
-          <li><strong>Twenty logs at once,</strong> to find the pattern one log can't show you.</li>
-          <li><strong>Putting a transaction back together</strong> after Salesforce shattered it across several logs.</li>
-          <li><strong>Enormous logs,</strong> in chunks. File upload raises the ceiling; chunking is what removes it.</li>
-          <li><strong>Something visual.</strong> No promises about when.</li>
+          <li><strong>Benchmarks you can keep.</strong> Find out whether the fix helped.</li>
+          <li><strong>Lead with the error you got.</strong> The 9am email, answered first.</li>
+          <li><strong>One transaction, many logs.</strong> Put a shattered journey back together.</li>
+          <li><strong>Before and after.</strong> Two runs, side by side.</li>
+          <li><strong>Enormous logs,</strong> in chunks.</li>
         </ul>
       </div>
+
+
 
     </div>
 
@@ -560,8 +635,9 @@
       <h3>🔒 Privacy Policy</h3>
       <p>
         Apex debug logs are among the most sensitive artefacts a Salesforce org
-        produces. They routinely contain record IDs, email addresses, field values and
-        the shape of your internal automation.
+        produces. They routinely contain names, email addresses, phone numbers,
+        postal addresses, whatever your code printed with System.debug, and the
+        shape of your internal automation.
       </p>
       <p>
         <strong>Saasy Logs does not collect, store, transmit or receive your log
