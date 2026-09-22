@@ -28,15 +28,27 @@
   render it on backgrounds of their own and CSS reaches none of them.
   favicon.svg is the sunglasses alone, Soot on a Marigold tile: at 16-32px a
   4% keyline is sub-pixel and turns to mush, so the small mark takes its
-  contrast from the tile instead, at 8.65:1. The glasses left the logo — they covered the S's crossing and
-  the L's spine, and letters cannot wear sunglasses and still be letters.
+  contrast from the tile instead, at 8.65:1.
   .ico is listed last as a fallback for browsers that ignore SVG icons.
 
-  ?v=2 on every icon URL. Browsers cache favicons far more aggressively than
-  anything else on a page - often past a hard reload, sometimes indefinitely -
-  so the blue mark survived the recolour on machines that had already seen it.
-  Bump the number whenever an icon changes; it is the only reliable way to
-  reach somebody who already has the old one.
+  This used to say "the glasses left the logo - letters cannot wear sunglasses
+  and still be letters." They came back on 21 Sept and they do both, but only
+  because of a Marigold halo that keeps the black glass off the white letter.
+  brand/README.md has the position and why it is not a free parameter.
+
+  VERSION EACH URL INDEPENDENTLY. Browsers cache favicons far more aggressively
+  than anything else on a page - often past a hard reload, sometimes
+  indefinitely - so the blue mark survived the recolour on machines that had
+  already seen it. Bump a number only when THAT file's bytes change:
+
+    favicon*        v=2   unchanged since 19 Sept
+    logo.svg        v=3   sunglasses, 21 Sept
+    og-image.png    v=4   rebuilt twice after v=3 while the glasses moved
+
+  og-image is the cautionary one. It went to v=3, then the image was
+  regenerated twice at different glasses heights without the number moving -
+  so for two commits the tag promised a file that had already changed under
+  it. A regenerated asset needs a bump even when nothing in the HTML did.
 -->
 <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg?v=2">
 <link rel="apple-touch-icon" href="/brand/favicon-180.png?v=2">
@@ -48,11 +60,11 @@
   square, the card either crops it or quietly downgrades. The tag claimed a
   layout the image could not fill. 1200x630 is what both LinkedIn and X read.
 -->
-<meta property="og:image" content="https://saasylogs.com/og-image.png?v=3">
+<meta property="og:image" content="https://saasylogs.com/og-image.png?v=4">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Saasy Logs: an S and L monogram wearing sunglasses, over the words Saasy Logs">
-<meta name="twitter:image" content="https://saasylogs.com/og-image.png?v=3">
+<meta name="twitter:image" content="https://saasylogs.com/og-image.png?v=4">
 
 <link rel="stylesheet" href="/styles.css?v=2">
 </head>

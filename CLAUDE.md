@@ -17,6 +17,21 @@ Everything committed here, including history, is visible to anyone.
   scrubbed fixture. Check before pushing.
 - A mistake in history is public even after it's deleted.
 
+## Root files are not optional
+
+`favicon.ico`, `favicon.svg`, `apple-touch-icon.png` and `og-image.png` sit at
+the **repo root**, duplicating what's in `brand/`. That duplication is
+deliberate and matches DwelLogs.com.
+
+Browsers, feed readers, link unfurlers and crawlers request `/favicon.ico` by
+convention without ever parsing the `<link>` tags. GitHub Pages has no rewrite
+rules — it serves the file at the path asked for or it serves nothing. For a
+while these existed only under `brand/`, so every client that didn't read the
+HTML got nothing.
+
+`brand/` is the source of truth. The root copies are the endpoints the web
+expects. **If you change an icon, update both** — and bump its `?v=`.
+
 ## How it's built
 
 - Plain static HTML/CSS served by **GitHub Pages** from `main`. No build step
