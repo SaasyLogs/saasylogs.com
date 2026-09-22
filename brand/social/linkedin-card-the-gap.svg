@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200">
+  <rect width="1200" height="1200" fill="#17120f"/>
+  <rect x="0" y="0" width="1200" height="14" fill="#f59e0b"/>
+
+  <text x="90" y="150" font-family="DejaVu Serif" font-size="40" font-weight="bold" fill="#8c7d73">Two consecutive lines. Nothing between them.</text>
+
+  <rect x="90" y="215" width="1020" height="120" rx="10" fill="#221b17" stroke="#3b302a" stroke-width="2"/>
+  <text x="120.0" y="270" font-family="DejaVu Sans Mono" font-size="30" fill="#faf6f3">13:29:</text>
+  <text x="228.4" y="270" font-family="DejaVu Sans Mono" font-size="30" fill="#f59e0b">15.191</text>
+  <text x="372.9" y="270" font-family="DejaVu Sans Mono" font-size="30" fill="#8c7d73">(1878656913)</text>
+  <text x="120" y="312" font-family="DejaVu Sans Mono" font-size="26" fill="#6b5a50">SOQL_EXECUTE_END | Rows:1</text>
+
+  <rect x="90" y="360" width="1020" height="230" rx="10" fill="#120e0b" stroke="#c1362b" stroke-width="3" stroke-dasharray="14 10"/>
+  <text x="600" y="462" text-anchor="middle" font-family="DejaVu Serif" font-size="100" font-weight="bold" fill="#e2622a">10.40 s</text>
+  <text x="600" y="518" text-anchor="middle" font-family="DejaVu Sans" font-size="33" fill="#b6a498">nothing logged</text>
+  <text x="600" y="562" text-anchor="middle" font-family="DejaVu Sans" font-size="30" fill="#8c7d73">60% of the whole transaction</text>
+
+  <rect x="90" y="615" width="1020" height="120" rx="10" fill="#221b17" stroke="#3b302a" stroke-width="2"/>
+  <text x="120.0" y="670" font-family="DejaVu Sans Mono" font-size="30" fill="#faf6f3">13:29:</text>
+  <text x="228.4" y="670" font-family="DejaVu Sans Mono" font-size="30" fill="#f59e0b">26.282</text>
+  <text x="372.9" y="670" font-family="DejaVu Sans Mono" font-size="30" fill="#8c7d73">(12282920584)</text>
+  <text x="120" y="712" font-family="DejaVu Sans Mono" font-size="26" fill="#6b5a50">DML_BEGIN | Op:Update | Rows:4</text>
+
+  <text x="90" y="865" font-family="DejaVu Serif" font-size="60" font-weight="bold" fill="#faf6f3">Logs record events,</text>
+  <text x="90" y="938" font-family="DejaVu Serif" font-size="60" font-weight="bold" fill="#e2622a">not silence.</text>
+
+  <text x="90" y="1032" font-family="DejaVu Sans" font-size="31" fill="#b6a498">The expensive part is often the gap.</text>
+  <text x="90" y="1077" font-family="DejaVu Sans" font-size="31" fill="#8c7d73">saasylogs.com</text>
+
+  <rect x="975" y="988" width="135" height="135" rx="26" fill="#f59e0b" stroke="#e2622a" stroke-width="6"/>
+  <text x="1042" y="1080" text-anchor="middle" font-family="DejaVu Serif" font-size="66" font-weight="bold" fill="#faf6f3">SL</text>
+</svg>

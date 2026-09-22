@@ -139,13 +139,38 @@
     box-shadow: 0 10px 30px -8px var(--accent-glow);
   }
 
-  /* Titles in the logo's face. The monogram is drawn from DejaVu Serif Bold,
-     so the stack asks for that first and falls back to Georgia - which is on
-     nearly every machine, was one of the four candidates, and is the closest
-     widely-installed relative. No webfont: a 350 KB download to set six
-     headings is a bad trade on a page this size. */
+  /* Titles in the logo's face.
+   *
+   * This used to be `"DejaVu Serif", Georgia, ...` with no webfont, on the
+   * reasoning that a 350 KB download to set six headings was a bad trade.
+   * The trade was real; the premise was not. DejaVu ships with Linux distros
+   * and LibreOffice - it is NOT bundled with macOS or Windows. So the first
+   * name in that stack matched almost nowhere, every visitor got Georgia, and
+   * the titles were never in the logo's face at all. It looked correct while
+   * being authored on a machine that happened to have the font.
+   *
+   * Subsetting to Latin-1 plus the punctuation the page actually uses brings
+   * it to 24 KB, which is a different decision than 350 KB. Self-hosted, so
+   * the page still makes zero third-party requests - no Google Fonts, nothing
+   * that tells anyone else who visited.
+   *
+   * WOFF, not WOFF2: the machine this was built on has no brotli and no root
+   * to install it. WOFF2 would be ~30% smaller. If you ever regenerate this
+   * somewhere with brotli, use --flavor=woff2 and add it to the src list
+   * ahead of the woff.
+   *
+   * Georgia stays as the fallback for the swap period and for anyone who
+   * blocks webfonts. */
+  @font-face {
+    font-family: "Saasy Serif";
+    src: url("/fonts/DejaVuSerif-Bold-subset.woff") format("woff");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
   h1, h2, .section-title, .stage-name, .legal-section h3 {
-    font-family: "DejaVu Serif", Georgia, "Times New Roman", serif;
+    font-family: "Saasy Serif", "DejaVu Serif", Georgia, "Times New Roman", serif;
     font-weight: 700;
   }
 
@@ -156,7 +181,9 @@
   }
 
   .kicker {
-    font-family: "DejaVu Serif", Georgia, "Times New Roman", serif;
+    /* Italic: the subset is Bold roman only, so this synthesises. Deliberate
+       - shipping a second face for one line is the 350 KB mistake again. */
+    font-family: "Saasy Serif", "DejaVu Serif", Georgia, "Times New Roman", serif;
     font-size: 1.05rem; font-style: italic;
     color: var(--accent); margin: 0 0 14px;
   }

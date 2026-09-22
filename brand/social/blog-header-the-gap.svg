@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 840" width="1600" height="840">
+  <rect width="1600" height="840" fill="#17120f"/>
+  <rect x="0" y="0" width="1600" height="10" fill="#f59e0b"/>
+
+  <text x="100" y="128" font-family="DejaVu Serif" font-size="62" font-weight="bold" fill="#faf6f3">Logs record events,</text>
+  <text x="800.3" y="128" font-family="DejaVu Serif" font-size="62" font-weight="bold" fill="#e2622a">not silence.</text>
+
+  <text x="100" y="186" font-family="DejaVu Sans" font-size="28" fill="#8c7d73">Two consecutive lines from a production debug log. Nothing was deleted between them.</text>
+
+  <!-- the timeline: the gap is rendered as actual distance -->
+  <line x1="150" y1="400" x2="1450" y2="400" stroke="#3b302a" stroke-width="3"/>
+  <line x1="300" y1="400" x2="1300" y2="400" stroke="#c1362b" stroke-width="5" stroke-dasharray="16 12"/>
+
+  <circle cx="300" cy="400" r="15" fill="#f59e0b"/>
+  <circle cx="1300" cy="400" r="15" fill="#f59e0b"/>
+
+  <!-- left event -->
+  <text x="150.0" y="322" font-family="DejaVu Sans Mono" font-size="30" fill="#faf6f3">13:29:</text>
+  <text x="258.4" y="322" font-family="DejaVu Sans Mono" font-size="30" fill="#f59e0b">15.191</text>
+  <text x="150" y="358" font-family="DejaVu Sans Mono" font-size="24" fill="#6b5a50">SOQL_EXECUTE_END</text>
+
+  <!-- right event, right-aligned to its marker -->
+  <text x="1233.2" y="322" font-family="DejaVu Sans Mono" font-size="30" fill="#faf6f3">13:29:</text>
+  <text x="1341.6" y="322" font-family="DejaVu Sans Mono" font-size="30" fill="#f59e0b">26.282</text>
+  <text x="1450" y="358" text-anchor="end" font-family="DejaVu Sans Mono" font-size="24" fill="#6b5a50">DML_BEGIN</text>
+
+  <!-- the gap itself -->
+  <text x="800" y="520" text-anchor="middle" font-family="DejaVu Serif" font-size="110" font-weight="bold" fill="#e2622a">10.40 s</text>
+  <text x="800" y="572" text-anchor="middle" font-family="DejaVu Sans" font-size="32" fill="#b6a498">nothing logged</text>
+  <text x="800" y="618" text-anchor="middle" font-family="DejaVu Sans" font-size="29" fill="#8c7d73">60% of the whole transaction</text>
+
+  <text x="100" y="740" font-family="DejaVu Sans" font-size="30" fill="#b6a498">The expensive part is often the gap.</text>
+
+  <rect x="1352" y="660" width="120" height="120" rx="23" fill="#f59e0b" stroke="#e2622a" stroke-width="6"/>
+  <text x="1412" y="742" text-anchor="middle" font-family="DejaVu Serif" font-size="58" font-weight="bold" fill="#faf6f3">SL</text>
+</svg>

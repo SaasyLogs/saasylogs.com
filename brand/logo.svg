@@ -1,40 +1,89 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Saasy Logs logo: SL monogram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Saasy Logs logo: SL monogram wearing sunglasses">
   <title>Saasy Logs</title>
   <!--
-    LOGO — 64px and up. favicon.svg is the small mark.
+    LOGO - 64px and up. favicon.svg is the small mark.
 
-    Marigold tile, Copper keyline, Chalk letters. Every colour is FIXED.
+    Marigold tile, Copper keyline, Chalk letters, Soot sunglasses. Every
+    colour is FIXED. An earlier version switched the letters with
+    prefers-color-scheme so they matched the page. Randi, 19 Sept: "lets
+    control the font color so we dont see random background colors form
+    whatever site it might appear on." Right - this file gets rendered by
+    Google, Slack, LinkedIn and every email client on backgrounds none of us
+    choose, and a mark that changes depending on where it lands is a mark
+    nobody can recognise.
 
-    An earlier version switched the letters with prefers-color-scheme so they
-    matched the page. Randi, 19 Sept: "lets control the font color so we dont
-    see random background colors form whatever site it might appear on."
-    Right — this file gets rendered by Google, Slack, LinkedIn and every email
-    client on backgrounds none of us choose, and a mark that changes depending
-    on where it lands is a mark nobody can recognise. It looks the same
-    everywhere now, including places that never read a media query at all.
-
-    THE LETTERS ARE OUTLINES, NOT <text>. A logo that needs the viewer to have
-    a font installed renders differently on every machine. Drawn from
+    THE LETTERS ARE OUTLINES, NOT <text>. A logo that needs the viewer to
+    have a font installed renders differently on every machine. Drawn from
     DejaVu Serif Bold, chosen from a side-by-side against Liberation Serif.
-    EB Garamond was the first choice and Merriweather the second; neither is
-    installed and apt needs root. Drop either .ttf/.otf into brand/ and only
-    the two <path> elements below regenerate — nothing else in this file moves.
+    EB Garamond was the first choice and Merriweather the second; neither was
+    installed and apt needs root, so DejaVu is an availability decision, not
+    a design one - see brand/README.md before treating it as settled.
 
-    NOTE the contrast: Chalk on Marigold is 2.00:1. The letterforms are heavy
-    enough to carry it at 128px and up, which is what this file is for. The
-    small mark does NOT inherit it — favicon.svg is Soot on Marigold at 8.65:1,
-    because at 16px weight stops compensating for contrast.
+    WHERE THE SUNGLASSES SIT.
 
-    No sunglasses: they covered the S's crossing and the L's spine. They are
-    the whole mark in favicon.svg, where they have the pixels to themselves.
+    Dropped on 19 Sept for covering the S's crossing and the L's spine.
+    Re-rendering that version confirmed it rather than taking it on trust:
+    worn across the bowl, the S disappears at 128 and 64 and you are left
+    with glasses and an L.
+
+    The first fix overcorrected to y=172, which overlapped only 22 units of a
+    170-unit letter and read as floating above the S rather than worn on it.
+    Randi, 21 Sept: "no I do not like the sunglasses that high."
+
+    Shipped position is y=232, the lowest of a 172/190/205/218/232 ladder
+    rendered at 512 and 64. Lens bottom lands at y=275. The S's CROSSING -
+    the stroke that makes an S an S - runs through roughly y=270-290, so the
+    glasses reach it and stop. That is the floor; below this the letter goes.
+
+    A note on how the choice was nearly made wrong: 232 was first written off
+    as "the S's top is eaten at 64px and the halo degrades into a stray orange
+    line." That was read off a small montage tile. Zoomed properly at 64 the S
+    reads, and the pale line above the glasses is the S's own white crown, not
+    a halo artefact. The claim was wrong and the rejection with it. Judge this
+    file at 1:1, never from a contact sheet.
+
+    Three things hold it up. Remove any one and the mush comes back:
+
+      1. Glasses reach the crossing and stop. They never cross it.
+      2. Letters dropped to baseline y=360 (from 337.65) for headroom.
+      3. The MARIGOLD HALO - a 16-unit tile-coloured stroke behind the
+         glasses, cutting a gap between black glass and white letter.
+         Load bearing: without it the two dark-on-light shapes fuse, and it
+         is the only reason the S reads at 64px. It is also what bought the
+         room to sit this low at all.
+
+    Verified at 512 / 128 / 64. At 32 it does turn to mush - fine, and always
+    was: that is favicon.svg's range, where the glasses have the pixels to
+    themselves. Do not use this file below 64px to save a request.
+
+    If the crown sliver above the glasses ever reads as an artefact rather
+    than a detail, the fix is letters_y 372 (not moving the glasses) - it
+    tucks the crown fully behind them. Rendered, works, deliberately not
+    shipped: the sliver is the version that got picked.
   -->
 
-  <!-- Keyline inset by half its own width so it sits inside the viewBox. -->
-  <rect x="10" y="10" width="492" height="492" rx="92"
-        fill="#f59e0b" stroke="#e2622a" stroke-width="20"/>
-
+  <rect x="10" y="10" width="492" height="492" rx="92" fill="#f59e0b" stroke="#e2622a" stroke-width="20"/>
   <g fill="#faf6f3">
-      <path transform="translate(91.21 337.65) scale(0.10953 -0.10953)" d="M158 72V426H285Q314 258 422.0 175.0Q530 92 721 92Q876 92 957.0 151.0Q1038 210 1038 324Q1038 414 983.0 464.0Q928 514 756 557L532 612Q313 668 224.0 767.5Q135 867 135 1051Q135 1273 282.5 1396.5Q430 1520 696 1520Q827 1520 968.5 1498.0Q1110 1476 1262 1432V1102H1135Q1106 1256 1008.0 1327.5Q910 1399 729 1399Q581 1399 505.5 1347.5Q430 1296 430 1194Q430 1101 482.0 1052.5Q534 1004 737 952L961 897Q1169 845 1262.5 735.0Q1356 625 1356 432Q1356 206 1200.0 88.5Q1044 -29 741 -29Q595 -29 451.0 -4.0Q307 21 158 72Z"/>
-      <path transform="translate(253.21 337.65) scale(0.10953 -0.10953)" d="M96 0V121H287V1372H96V1493H864V1372H672V137H1260V373H1395V0Z"/>
+    <path transform="translate(91.21 360) scale(0.10953 -0.10953)" d="M158 72V426H285Q314 258 422.0 175.0Q530 92 721 92Q876 92 957.0 151.0Q1038 210 1038 324Q1038 414 983.0 464.0Q928 514 756 557L532 612Q313 668 224.0 767.5Q135 867 135 1051Q135 1273 282.5 1396.5Q430 1520 696 1520Q827 1520 968.5 1498.0Q1110 1476 1262 1432V1102H1135Q1106 1256 1008.0 1327.5Q910 1399 729 1399Q581 1399 505.5 1347.5Q430 1296 430 1194Q430 1101 482.0 1052.5Q534 1004 737 952L961 897Q1169 845 1262.5 735.0Q1356 625 1356 432Q1356 206 1200.0 88.5Q1044 -29 741 -29Q595 -29 451.0 -4.0Q307 21 158 72Z"/>
+    <path transform="translate(253.21 360) scale(0.10953 -0.10953)" d="M96 0V121H287V1372H96V1493H864V1372H672V137H1260V373H1395V0Z"/>
   </g>
+<g transform="translate(173.0 232.0) scale(0.31798) translate(-256 -256)">
+  <g fill="none" stroke="#f59e0b" stroke-width="16" stroke-linejoin="round">
+    <rect x="28" y="176" width="456" height="42" rx="21"/>
+    <path d="M 206 214 C 230 190 282 190 306 214 L 306 250 C 282 232 230 232 206 250 Z"/>
+    <path d="M 40 210 H 212 L 194 316 C 184 362 150 390 110 390 C 72 390 42 364 34 320 L 40 220 Z"/>
+    <path d="M 472 210 H 300 L 318 316 C 328 362 362 390 402 390 C 440 390 470 364 478 320 L 472 220 Z"/>
+  </g>
+  </g>
+<g transform="translate(173.0 232.0) scale(0.31798) translate(-256 -256)">
+  <g fill="#17120f">
+    <rect x="28" y="176" width="456" height="42" rx="21"/>
+    <path d="M 206 214 C 230 190 282 190 306 214 L 306 250 C 282 232 230 232 206 250 Z"/>
+    <path d="M 40 210 H 212 L 194 316 C 184 362 150 390 110 390 C 72 390 42 364 34 320 L 40 220 Z"/>
+    <path d="M 472 210 H 300 L 318 316 C 328 362 362 390 402 390 C 440 390 470 364 478 320 L 472 220 Z"/>
+  </g>
+  <g stroke="#ffffff" stroke-opacity="0.5" stroke-width="22" stroke-linecap="round" fill="none">
+    <path d="M 72 250 L 116 316"/>
+  </g>
+</g>
 </svg>
