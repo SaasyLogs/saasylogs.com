@@ -49,15 +49,27 @@ at the registrar and that is the only place they exist.
 
 When setting the forwards:
 
-- **301 permanent, not masked/frame forwarding.** A masked forward keeps the
-  typo domain in the address bar and serves the site inside a frame: link
-  previews then read the wrapper instead of the page, so every share of a
-  masked URL loses the card built in `og-image.png`. A 301 hands the visitor
-  and the crawler to the real domain and consolidates the SEO.
+- **Turn off Link In Bio first.** Porkbun enables it on every newly registered
+  `.com`, which auto-redirects the domain to `yourdomain-com.l.ink` and serves
+  a Porkbun landing page. It holds the domain, so a URL forward configured
+  underneath it does nothing. Symptom: the domain resolves, redirects, and
+  lands on "A Brand New Domain! Brought to you by Porkbun."
+- **Choose permanent (301).** Porkbun defaults to a temporary 302/307. Their
+  reasoning is that it's reversible and doesn't affect the *target's* SEO,
+  which is fine for a domain you might repoint — but these are permanent
+  typo-catchers. A 302 leaves them eligible to be indexed as separate sites;
+  a 301 consolidates everything onto `saasylogs.com`.
+- **Never masked/frame forwarding.** It keeps the typo domain in the address
+  bar and serves the site inside a frame, so link previews read the wrapper
+  instead of the page and every share loses the `og-image.png` card.
 - **Forward the path, not just the root**, so `sassylogs.com/anything` lands on
   `saasylogs.com/anything` rather than dumping everyone on the homepage.
 - `www.saasylogs.com` needs no forward. GitHub redirects `www` to the apex
   automatically once the DNS records exist.
+
+**Verify by fetching, not by trusting the settings screen.** As of 22 Sept all
+three still returned the Porkbun parking page after the forwards were believed
+set. A saved form is not a working redirect.
 
 ## Brand
 
