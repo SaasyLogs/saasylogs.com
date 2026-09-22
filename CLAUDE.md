@@ -82,9 +82,57 @@ When setting the forwards:
 - `www.saasylogs.com` needs no forward. GitHub redirects `www` to the apex
   automatically once the DNS records exist.
 
-**Verify by fetching, not by trusting the settings screen.** As of 22 Sept all
-three still returned the Porkbun parking page after the forwards were believed
-set. A saved form is not a working redirect.
+**Verify by loading them, not by trusting the settings screen.** All three
+confirmed working 22 Sept, HTTP and HTTPS, with paths carried through.
+
+`sassylogs.com` was broken for a while with **DNS pointing at GitHub Pages**
+instead of a Porkbun URL forward: GitHub received the request, found no repo
+whose `CNAME` contained `sassylogs.com`, and served its 404. HTTPS failed
+outright because GitHub will not issue a certificate for a domain no Pages
+site claims. Fixed by parking the domain and rebuilding the forward.
+
+**A browser will lie to you about this.** After the fix, the page still showed
+GitHub's 404 from a cached DNS entry. What settled it was querying DNS
+directly — `https://dns.google/resolve?name=<domain>&type=A` in the address
+bar — and comparing: a working forward answers `207.207.210.36/50/23`
+(Porkbun), a broken one answers `185.199.x.x` (GitHub Pages). Check the IPs
+before concluding a change did not take.
+
+**A second domain can never be served by the `saasylogs.com` repo** — Pages
+allows one custom domain per repo, so pointing DNS at GitHub can only ever
+produce this 404. There is no configuration that rescues it.
+
+This is the domain most worth fixing: "Sassy" is the real English word and the
+one people will type.
+
+### The recipe that works
+
+Porkbun, per domain. Two of the three were already set this way; the broken one
+had DNS aimed at GitHub instead.
+
+1. **Reset first if the domain has been fiddled with.** Domain Management →
+   **Details** → Park Domain → **Park Now**. This removes ALIAS, CNAME, A and
+   AAAA for the root, `www` and wildcard — the whole set that causes conflicts.
+   Email is untouched; parking only affects web. A Porkbun landing page
+   afterwards is success, not failure.
+2. **Details → URL Forwarding → edit:**
+   - Hostname: **blank** (root domain)
+   - Forward Traffic To: `https://saasylogs.com`
+   - Wildcard Forwarding: **on** — covers `www` and subdomains
+   - Advanced → **301 Permanent** (Porkbun defaults to 302; see above)
+   - Advanced → **Include the requested URI path**: on
+3. Wait 10–15 minutes, then **load it in a browser** — both `http://` and
+   `https://`. A forward that works on HTTP and fails on HTTPS means the
+   certificate has not been issued yet.
+
+A red conflict warning in the forwarding menu means leftover DNS records are
+still present. Delete those, then re-submit the forward.
+
+**Trailing slash in "Forward Traffic To".** `sassylogs.com` currently produces
+`saasylogs.com//brand/README.md` — a double slash — where the other two
+produce a single one. Harmless (GitHub Pages serves it either way) but it
+creates a second URL for the same page. The target field has a trailing slash;
+enter it as `https://saasylogs.com` with none.
 
 ## Brand
 
