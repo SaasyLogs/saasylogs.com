@@ -151,6 +151,10 @@ DNS lives at Porkbun:
   `185.199.110.153`, `185.199.111.153`
 - one `CNAME` on `www` → `saasylogs.github.io`
 
+**Typo domains** (not served here): sassylogs.com, saasylog.com and
+sassylog.com use Porkbun URL forwarding to `https://saasylogs.com` with a
+permanent 301, path included, wildcard on.
+
 ---
 
 ## Licence
