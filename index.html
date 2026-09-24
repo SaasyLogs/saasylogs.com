@@ -116,7 +116,7 @@
     accounts for.
   </p>
   <p class="tagline">
-    Saasy&nbsp;Logs finds those gaps, and the path actually taken, and shows it
+    Saasy&nbsp;Logs finds those gaps, the path actually taken, and shows it
     clearly rather than buried in thousands of lines of output. Paste a log into
     a Google Sheet and have Saasy&nbsp;Logs map back the route: every trigger,
     flow, workflow rule, validation and class it hit, in the order it hit them.
@@ -147,9 +147,21 @@
        class="cta-btn secondary">Read how it found 10&nbsp;seconds nobody could see</a>
   </div>
 
+  <!--
+    The word "beta" is gone, and not for polish. Google lists "the app is
+    still being tested and not publicly ready" as a common cause of a
+    Marketplace listing failing review, and the reviewer follows the link on
+    the listing to this page. A page that announces it is in beta answers that
+    question for them.
+
+    What replaces it says the same true thing — it is not on the Marketplace
+    yet, so getting it is a conversation — without using the word that reads
+    as "unfinished". The ask for breaking logs stays; it is the most useful
+    sentence on the page and it has actually worked.
+  -->
   <p class="notice">
-    <strong>It's in beta, which here means: email me and I'll set you up.</strong>
-    <a href="mailto:support@saasylogs.com?subject=Saasy%20Logs%20beta%20access">Ask
+    <strong>Not on the Marketplace yet — email me and I'll set you up.</strong>
+    <a href="mailto:support@saasylogs.com?subject=Saasy%20Logs%20access">Ask
     for access</a> — and if you have a log that breaks it, send me that instead.
     That's how the last three bugs got found.
   </p>
@@ -320,20 +332,38 @@
         postal addresses, whatever your code printed with System.debug, and the
         shape of your internal automation.
       </p>
+      <!--
+        Rewritten 24 Sept against the Tone rule about arguing with an
+        accusation nobody made. The old version ran: "does not collect, store,
+        transmit or receive" / "makes no external network requests" / "contains
+        no analytics or tracking" / "requests no Google Drive permission" /
+        "We operate no server and hold no account" / "no data of yours ever
+        reaches us" — seven denials, and the reader ends up wondering who we
+        were arguing with. Randi, 24 Sept: "i really dont like the arguments to
+        no one".
+
+        Same facts, stated as what happens. "It runs inside the spreadsheet you
+        opened it from" IS "there is no server", and it is the version a reader
+        can picture. The scope sentence does the work the Drive denial was
+        doing, and it is checkable — the consent screen lists it.
+
+        One denial survives on purpose: the cache. That one answers a real
+        question, because an earlier version DID keep text for six hours, and
+        anyone who used it then is owed the change. A denial earns its place
+        when it corrects something the reader might actually believe.
+      -->
       <p>
-        <strong>Saasy Logs does not collect, store, transmit or receive your log
-        data.</strong> Parsing happens entirely inside the Google Apps Script runtime
-        attached to your own spreadsheet. The add-on makes no external network
-        requests, contains no analytics or tracking, and requests no Google Drive
-        permission at all — it can only see the spreadsheet you open it from.
+        <strong>Your log stays in your spreadsheet.</strong> Saasy Logs runs
+        inside the Google Apps Script runtime attached to the sheet you opened
+        it from, and that sheet is the only thing it can see — it asks for no
+        Google Drive permission at all. The parsing, the summary and the trace
+        are all built there.
       </p>
       <p>
-        We operate no server and hold no account for you, so no data of yours ever
-        reaches us. <strong>Nothing is stored, anywhere, for any length of
-        time</strong> — not on a server, not in a cache, not between runs. An
-        earlier version held your pasted text in Google's per-document cache for
-        six hours so that you could re-run without re-pasting; that feature has
-        since been removed, and the cache went with it.
+        <strong>Nothing is kept once the run finishes.</strong> An earlier
+        version held your pasted text in Google's per-document cache for six
+        hours so you could re-run without re-pasting; that feature is gone and
+        the cache went with it.
       </p>
       <p class="updated">Last updated 19 September 2026 · Questions: <a href="mailto:support@saasylogs.com">support@saasylogs.com</a></p>
     </section>
