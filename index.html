@@ -81,15 +81,45 @@
 
   <p class="kicker">We find the SaaS in your logs.</p>
 
+  <!--
+    THE FATHER-IN-LAW TEST.
+
+    This paragraph used to run 239 words and five metaphors — map, path, key,
+    route, decode — before the reader met a single real thing. Randi's
+    father-in-law, who is blue collar and not technical, read the blog post
+    and found it sold the tool better than this page did.
+
+    That is the useful data point, and it is not "the post is better written".
+    A NON-TECHNICAL READER UNDERSTOOD THE POST AND DID NOT UNDERSTAND THE
+    PAGE. The post opens on two adjacent log lines with eleven seconds between
+    them, and it lands without any Salesforce knowledge because the finding is
+    about TIME, not about Apex. Everyone understands time going missing.
+
+    Randi, 24 Sept, on why that matters beyond one reader: "i want ot make
+    sure it sells or is readable to not just the ultra tech but also to newbies
+    and those who might not have ever needed to look at a log (like those who
+    might be actually acquiring it for their team)". The person adopting this
+    for a team may never have opened a debug log.
+
+    Note what this does NOT do: it does not lead with the trace table. The
+    obvious fix — "move the concrete evidence up" — makes the page worse for
+    exactly that reader, because a trace table is MORE technical than the
+    metaphor it would replace, not less. Lead with the silence, which anyone
+    can picture; let the tables below be the proof for people who want it.
+
+    Same sentence as the Marketplace short description. One message, no drift.
+  -->
   <p class="tagline">
-    Your code is the map, the log is <strong>the path that was actually
-    taken</strong>. The problem is the output is hard to read. There are many
-    paths it can take, and getting a clear view of the route shouldn't be hard.
-    Saasy&nbsp;Logs is the key to that map. It decodes the path taken and tells
-    you every stop along the way — every trigger, flow, workflow rule,
-    validation and class it hit, in the order it hit them, on the records it
-    touched. Salesforce writes all of it down and then makes it unreadable.
-    Paste one into a Google Sheet and read it back.
+    The code is what events <em>could</em> happen, the debug log is what did.
+    <strong>The expensive thing is very often not an event. It's the absence of
+    one.</strong> It's the time between two events that nothing in the logs
+    accounts for.
+  </p>
+  <p class="tagline">
+    Saasy&nbsp;Logs finds those gaps, and the path actually taken, and shows it
+    clearly rather than buried in thousands of lines of output. Paste a log into
+    a Google Sheet and have Saasy&nbsp;Logs map back the route: every trigger,
+    flow, workflow rule, validation and class it hit, in the order it hit them.
   </p>
 
   <p class="scope">
@@ -97,9 +127,24 @@
     or sponsored by Salesforce,&nbsp;Inc.
   </p>
 
+  <!--
+    The second CTA points at ONE post, not the blog index.
+
+    Randi's father-in-law — blue collar, not technical — read that post and
+    found it sold the tool better than this page did. That is the data point
+    that matters: a non-technical reader understood the post and did not
+    understand the page. The post opens on two adjacent log lines with eleven
+    seconds between them, which needs no Salesforce knowledge at all, because
+    the finding is about TIME rather than about Apex.
+
+    Sending someone to the blog index instead makes them hunt for that, and
+    the index leads with whatever is newest. The footer keeps the general
+    link; this one goes where the argument is.
+  -->
   <div class="cta-row">
     <a href="#status" class="cta-btn">See what works today</a>
-    <a href="https://salesforcegirl.hashnode.dev/" class="cta-btn secondary">Read the blog</a>
+    <a href="https://salesforcegirl.hashnode.dev/logs-record-events-not-silence"
+       class="cta-btn secondary">Read how it found 10&nbsp;seconds nobody could see</a>
   </div>
 
   <p class="notice">
