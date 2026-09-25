@@ -282,6 +282,19 @@
 
     <div class="stage-grid">
 
+      <!--
+        "Scrub before you share. You choose what it keeps." was here until
+        24 Sept and it was false. The opt-in flags it referred to
+        (aliasApexNames, aliasSchema, aliasIds) exist only as Node CLI
+        arguments — the add-on dialog calls scrubLog(text, {}) and offers no
+        choice at all. A Now list headed "Working and verified" is the worst
+        place on the site to overstate, and this one invited a reader to look
+        for a control that is not there.
+
+        What replaces it is two checkable facts, taken from the KEPT/REPLACED
+        header in Scrub.gs: names and record IDs survive a default scrub,
+        values do not. The tab is new as of the v0.2.0 push.
+      -->
       <div class="stage-card is-now">
         <div class="stage-name now">Now</div>
         <div class="stage-sub">Working and verified</div>
@@ -291,7 +304,7 @@
           <li><strong>A summary in sentences.</strong> The duck goes first.</li>
           <li><strong>The shortlist.</strong> Fatal errors, blown limits, unlogged gaps, hotspots — ranked.</li>
           <li><strong>Honest about holes.</strong> It says when the log is incomplete.</li>
-          <li><strong>Scrub before you share.</strong> You choose what it keeps.</li>
+          <li><strong>Scrub before you share.</strong> Names and record IDs stay, values go. The clean copy lands on its own tab.</li>
           <li><strong>No Drive permission.</strong> Just the sheet you opened it from.</li>
         </ul>
       </div>
