@@ -411,6 +411,27 @@
   .stage-card.is-next .feature-list li::before  { content: "→"; color: var(--next-fg); }
   .stage-card.is-later .feature-list li::before { content: "○"; color: var(--later-fg); }
 
+  /* ---------------- what has changed (/changes/, 1 Oct) ---------------- */
+  .changes { max-width: 46rem; margin: 0 auto; padding: 40px 20px 20px; }
+  .wordmark { display: flex; align-items: center; gap: 10px; margin: 0 0 32px; }
+  .wordmark .home { display: flex; align-items: center; gap: 8px;
+                    color: var(--text-main); text-decoration: none; font-size: 1.1rem; }
+  .wordmark .home:hover b { text-decoration: underline; }
+  .wordmark .top { margin-left: auto; font-weight: 600; text-decoration: none; }
+  .changes h1 { text-align: left; margin: 0 0 10px; }
+  .changes .lede { color: var(--text-muted); margin: 0 0 36px; }
+  .changes h2 { font-size: 1.2rem; margin: 0 0 10px; display: flex;
+                align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .changes h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em;
+                color: var(--text-faint); margin: 16px 0 6px; }
+  .changes ul { margin: 0; padding-left: 20px; color: var(--text-muted); }
+  .changes li { margin-bottom: 8px; }
+  .changes li strong { color: var(--text-main); }
+  .changes .when { font-size: .85rem; font-weight: 500; color: var(--text-faint);
+                   font-family: inherit; letter-spacing: 0; }
+  .change-block, .release { padding: 24px 0; border-top: 1px solid var(--border); }
+  .change-block p { color: var(--text-muted); margin: 0; }
+
   /* ---------------- legal ---------------- */
 
   .legal-section {
