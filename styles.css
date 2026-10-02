@@ -263,6 +263,25 @@
     margin: 0 auto 40px;
   }
 
+  /* ---------------- how it works (1 Oct) ---------------- */
+  .steps {
+    list-style: none; counter-reset: step; padding: 0;
+    margin: 0 auto 72px; max-width: 900px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
+  }
+  .steps li {
+    counter-increment: step;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px; color: var(--text-muted);
+  }
+  .steps li::before {
+    content: counter(step);
+    display: flex; align-items: center; justify-content: center;
+    width: 1.9rem; height: 1.9rem; border-radius: 50%; margin-bottom: 12px;
+    background: var(--accent); color: var(--on-accent); font-weight: 700;
+  }
+  .steps strong { color: var(--text-main); font-weight: 650; }
+
   /* ---------------- the narration ---------------- */
 
   .story {

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Saasy Logs — Salesforce Debug Log Analyzer for Google Sheets</title>
-<meta name="description" content="Paste a Salesforce Apex debug log into a Google Sheet and read the route your transaction actually drove: every trigger, flow, workflow rule and class it hit, in order, on the records it touched.">
+<meta name="description" content="Paste or upload a Salesforce debug log into a Google Sheet and see the path your save actually took: every trigger, flow and class, in order, then what went wrong and where the time went.">
 <link rel="canonical" href="https://saasylogs.com/">
 
 <!-- Two theme-colors so the browser chrome follows the user's system setting. -->
@@ -66,7 +66,7 @@
 <meta property="og:image:alt" content="Saasy Logs: an S and L monogram wearing sunglasses, over the words Saasy Logs">
 <meta name="twitter:image" content="https://saasylogs.com/og-image.png?v=4">
 
-<link rel="stylesheet" href="/styles.css?v=2">
+<link rel="stylesheet" href="/styles.css?v=3">
 </head>
 <body>
 
@@ -79,47 +79,31 @@
 
   <h1>SAASY LOGS</h1>
 
-  <p class="kicker">We find the SaaS in your logs.</p>
+  <p class="kicker">Salesforce debug logs, in plain English.</p>
 
   <!--
-    THE FATHER-IN-LAW TEST.
+    REWRITTEN 1 Oct: readers found the page hard to digest. The hero used to
+    open on an idea ("The code is what events could happen, the debug log is
+    what did") and only said what the product IS about 70 words in. The gap
+    idea then came back twice more further down.
 
-    This paragraph used to run 239 words and five metaphors — map, path, key,
-    route, decode — before the reader met a single real thing. Randi's
-    father-in-law, who is blue collar and not technical, read the blog post
-    and found it sold the tool better than this page did.
+    The father-in-law test still holds (see the 24 Sept note in history): a
+    newcomer, or someone choosing a tool for their team, has to get it without
+    ever having read a log. So: what it is and what you do, in one paragraph,
+    path first per the Voice rule. The gap idea moved to its own section below,
+    said once, with the blog post that makes it land.
 
-    That is the useful data point, and it is not "the post is better written".
-    A NON-TECHNICAL READER UNDERSTOOD THE POST AND DID NOT UNDERSTAND THE
-    PAGE. The post opens on two adjacent log lines with eleven seconds between
-    them, and it lands without any Salesforce knowledge because the finding is
-    about TIME, not about Apex. Everyone understands time going missing.
+    The SaaS pun was the kicker. It needed explaining, which a kicker cannot
+    do; the name still carries it.
 
-    Randi, 24 Sept, on why that matters beyond one reader: "i want ot make
-    sure it sells or is readable to not just the ultra tech but also to newbies
-    and those who might not have ever needed to look at a log (like those who
-    might be actually acquiring it for their team)". The person adopting this
-    for a team may never have opened a debug log.
-
-    Note what this does NOT do: it does not lead with the trace table. The
-    obvious fix — "move the concrete evidence up" — makes the page worse for
-    exactly that reader, because a trace table is MORE technical than the
-    metaphor it would replace, not less. Lead with the silence, which anyone
-    can picture; let the tables below be the proof for people who want it.
-
-    Same sentence as the Marketplace short description. One message, no drift.
+    Keep this in step with the Marketplace short description. One message, no
+    drift.
   -->
   <p class="tagline">
-    The code is what events <em>could</em> happen, the debug log is what did.
-    <strong>The expensive thing is very often not an event. It's the absence of
-    one.</strong> It's the time between two events that nothing in the logs
-    accounts for.
-  </p>
-  <p class="tagline">
-    Saasy&nbsp;Logs finds those gaps, the path actually taken, and shows it
-    clearly rather than buried in thousands of lines of output. Paste a log into
-    a Google Sheet and have Saasy&nbsp;Logs map back the route: every trigger,
-    flow, workflow rule, validation and class it hit, in the order it hit them.
+    <strong>Paste or upload a Salesforce debug log into a Google Sheet.</strong>
+    Saasy&nbsp;Logs shows the path your save actually took: every trigger, flow,
+    validation and class, in order. Then it tells you in plain sentences what
+    went wrong and where the time went.
   </p>
 
   <p class="scope">
@@ -142,7 +126,7 @@
     link; this one goes where the argument is.
   -->
   <div class="cta-row">
-    <a href="#status" class="cta-btn">See what works today</a>
+    <a href="#how" class="cta-btn">See how it works</a>
     <a href="https://salesforcegirl.hashnode.dev/logs-record-events-not-silence"
        class="cta-btn secondary">Read how it found 10&nbsp;seconds nobody could see</a>
   </div>
@@ -170,43 +154,82 @@
 <main>
   <div class="wrap">
 
-    <h2 class="section-title">Every stop along the way</h2>
+    <!--
+      ORDER, 1 Oct: how it works, then the path, then what happened, then the
+      shortlist, then the full trace, then the gaps. Path first per the Voice
+      rule and because it is the thing nobody else shows. Each heading says
+      what its section holds, so the page reads from the headings alone.
+    -->
+    <h2 class="section-title" id="how">How it works</h2>
+    <ol class="steps">
+      <li><strong>Open a Google Sheet</strong> and start Saasy&nbsp;Logs from the
+        Extensions menu.</li>
+      <li><strong>Paste the log, or upload the .log file</strong> you downloaded
+        from Salesforce.</li>
+      <li><strong>Read the Summary.</strong> Each run adds its own tabs, so
+        nothing already in the sheet is touched.</li>
+    </ol>
+
+    <h2 class="section-title">See the path your save took</h2>
     <p class="section-sub">
-      This is the part no amount of reading the code will give you. Your repo says
-      what <em>can</em> run. The log says what <em>did</em> — in order, with the
-      handler that called it and the record it ran against, so you can filter to
-      one trigger, one class or one object and watch the rest fall away.
+      Your code says what <em>can</em> run. The log says what <em>did</em>.
+      Saasy&nbsp;Logs draws it as a map: which trigger fired, what it set off,
+      and on which object.
     </p>
 
+    <!--
+      Real shape from a real log: a line-item trigger fires the parent's
+      trigger, which fires a flow. Names are invented (the originals belong to
+      somebody's org) and the timings are left off, because the per-step totals
+      add up across repeated runs and read as nonsense out of context.
+    -->
     <div class="sample">
       <table class="trace">
-        <caption class="sr-only">Excerpt of a trace, inside a trigger</caption>
+        <caption class="sr-only">Example code path: the top-level steps a save went through</caption>
         <thead>
-          <tr><th>Kind</th><th>Class</th><th>Method</th><th>Object</th><th class="num">ms</th></tr>
+          <tr><th>Code path</th><th>Kind</th><th>Ran</th><th>Object</th></tr>
         </thead>
         <tbody>
-          <tr><td><span class="k k-trig">Trigger</span></td><td><code>—</code></td><td><code>—</code></td><td>OrderItem</td><td class="num">178.6</td></tr>
-          <tr><td><span class="k">Method</span></td><td><code>TriggerRouter</code></td><td><code>Run(IHandler)</code></td><td>OrderItem</td><td class="num">176.7</td></tr>
-          <tr class="hot"><td><span class="k">Method</span></td><td><code>OrderItemHandler</code></td><td><code>IsDisabled()</code></td><td>OrderItem</td><td class="num">62.4</td></tr>
-          <tr><td><span class="k">Method</span></td><td><code>HandlerSettings</code></td><td><code>findRelatedSettings(Id, Id)</code></td><td>OrderItem</td><td class="num">59.8</td></tr>
-          <tr><td><span class="k k-wf">Workflow</span></td><td><code>—</code></td><td><code>Recalculate Order Total ×4</code></td><td>OrderItem</td><td class="num"></td></tr>
+          <tr><td><code>OrderItemTrigger</code></td><td><span class="k k-trig">Trigger</span></td><td>×2</td><td>OrderItem</td></tr>
+          <tr><td><code>&nbsp;&nbsp;&nbsp;&nbsp;OrderTrigger</code></td><td><span class="k k-trig">Trigger</span></td><td>×2</td><td>Order</td></tr>
+          <tr><td><code>&nbsp;&nbsp;&nbsp;&nbsp;Set Order Owner</code></td><td><span class="k k-wf">Flow</span></td><td>once</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
 
     <p class="story-note">
-      Real timings, real shape, from a production log — the class names are
-      invented, because the originals belonged to somebody’s org. Two things fall
-      out of it that no amount of reading the code would: a third of the trigger’s
-      runtime goes on <code>IsDisabled()</code>, checking whether it should run at
-      all, and a workflow rule fired four times on the way past. Nobody debugging
-      that trigger was looking at a workflow rule.
+      Three lines, and the cascade is visible: saving an order line fired the
+      order's trigger, which fired a flow. Nobody had to read 20,000 rows to see it.
     </p>
 
-    <h2 class="section-title">A diagnosis, not a data dump</h2>
+    <h2 class="section-title">Then what happened, in sentences</h2>
     <p class="section-sub">
-      A debug log will happily tell you 168,000 things. Almost none of them matter.
-      Underneath the summary you get the shortlist.
+      The Summary opens by saying what happened, before any table.
+    </p>
+
+    <div class="story">
+      <div class="story-head">What happened</div>
+      <p class="lead">
+        10.40&nbsp;s — 60% of the whole transaction — is unlogged time, between
+        SOQL_EXECUTE_END and DML_BEGIN.
+      </p>
+      <p class="rest">
+        Overall, 96% of the elapsed time has no log line explaining it.
+      </p>
+      <p class="rest">
+        2 updates cost 5.13&nbsp;s across 5 rows; the slowest single one took
+        4.63&nbsp;s. That span includes every trigger, flow and validation the save
+        set off — not just the write.
+      </p>
+    </div>
+
+    <p class="story-note">
+      Real output from a real 25&nbsp;MB production log.
+    </p>
+
+    <h2 class="section-title">Then a ranked shortlist</h2>
+    <p class="section-sub">
+      A big log holds 168,000 lines. These are the few worth your time, worst first.
     </p>
 
     <div class="sample">
@@ -245,32 +268,41 @@
       </table>
     </div>
 
-    <h2 class="section-title">And it says so out loud</h2>
+    <h2 class="section-title">And every step, in detail</h2>
     <p class="section-sub">
-      The log already knows all of this. It just won't say it in a sentence.
-      Every line is something that happened — and the expensive part is often
-      the gap between two of them.
+      The Trace tab lists every trigger, method, flow and workflow rule that ran,
+      with the record it ran on. Filter to one trigger, class or object.
     </p>
 
-    <div class="story">
-      <div class="story-head">What happened</div>
-      <p class="lead">
-        10.40&nbsp;s — 60% of the whole transaction — is unlogged time, between
-        SOQL_EXECUTE_END and DML_BEGIN.
-      </p>
-      <p class="rest">
-        Overall, 96% of the elapsed time has no log line explaining it.
-      </p>
-      <p class="rest">
-        2 updates cost 5.13&nbsp;s across 5 rows; the slowest single one took
-        4.63&nbsp;s. That span includes every trigger, flow and validation the save
-        set off — not just the write.
-      </p>
+    <div class="sample">
+      <table class="trace">
+        <caption class="sr-only">Excerpt of a trace, inside a trigger</caption>
+        <thead>
+          <tr><th>Kind</th><th>Class</th><th>Method</th><th>Object</th><th class="num">ms</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="k k-trig">Trigger</span></td><td><code>—</code></td><td><code>—</code></td><td>OrderItem</td><td class="num">178.6</td></tr>
+          <tr><td><span class="k">Method</span></td><td><code>TriggerRouter</code></td><td><code>Run(IHandler)</code></td><td>OrderItem</td><td class="num">176.7</td></tr>
+          <tr class="hot"><td><span class="k">Method</span></td><td><code>OrderItemHandler</code></td><td><code>IsDisabled()</code></td><td>OrderItem</td><td class="num">62.4</td></tr>
+          <tr><td><span class="k">Method</span></td><td><code>HandlerSettings</code></td><td><code>findRelatedSettings(Id, Id)</code></td><td>OrderItem</td><td class="num">59.8</td></tr>
+          <tr><td><span class="k k-wf">Workflow</span></td><td><code>—</code></td><td><code>Recalculate Order Total ×4</code></td><td>OrderItem</td><td class="num"></td></tr>
+        </tbody>
+      </table>
     </div>
 
     <p class="story-note">
-      Real output from a real 25&nbsp;MB production log. Those two log lines sit
-      next to each other in the file. I'd scrolled past them for years.
+      Real timings from a production log, class names changed. A third of the
+      trigger's time went on <code>IsDisabled()</code>, checking whether it should
+      run at all, and a workflow rule fired four times on the way past.
+    </p>
+
+    <h2 class="section-title">It finds the time nobody logged</h2>
+    <p class="section-sub">
+      A debug log lists things that happened. The expensive part is often the
+      gap between two of them: seconds where nothing was logged at all. Saasy&nbsp;Logs
+      measures those gaps and tells you where they sit.
+      <a href="https://salesforcegirl.hashnode.dev/logs-record-events-not-silence">Read
+      how it found 10&nbsp;seconds between two lines</a> I'd scrolled past for years.
     </p>
 
     <h2 class="section-title" id="status">Where the project actually is</h2>
@@ -299,12 +331,15 @@
         <div class="stage-name now">Now</div>
         <div class="stage-sub">Working and verified</div>
         <ul class="feature-list">
+          <li><strong>The code path.</strong> Which trigger fired, what it set off, on which object.</li>
           <li><strong>The route, in order.</strong> Triggers, flows, workflow rules, validations, classes.</li>
           <li><strong>Filter without re-running.</strong> By trigger, class, method, object or limit type.</li>
           <li><strong>A summary in sentences.</strong> The duck goes first.</li>
           <li><strong>The shortlist.</strong> Fatal errors, blown limits, unlogged gaps, hotspots — ranked.</li>
           <li><strong>Honest about holes.</strong> It says when the log is incomplete.</li>
-          <li><strong>Scrub before you share.</strong> Names and record IDs stay, values go. The clean copy lands on its own tab.</li>
+          <li><strong>Paste or upload.</strong> The text or the .log file, whichever you have.</li>
+          <li><strong>A scrubbed copy, every run.</strong> Names and record IDs stay, values go. Ready to send.</li>
+          <li><strong>Your tabs are safe.</strong> Every run adds its own tabs and overwrites nothing of yours.</li>
           <li><strong>No Drive permission.</strong> Just the sheet you opened it from.</li>
         </ul>
       </div>
@@ -314,7 +349,7 @@
         <div class="stage-sub">Being built now</div>
         <ul class="feature-list">
           <li><strong>The Marketplace listing.</strong> Install it the normal way.</li>
-          <li><strong>Open a file.</strong> Instead of pasting one.</li>
+          <li><strong>The object path.</strong> Which records the save touched, in what order.</li>
           <li><strong>The 101 hunt.</strong> Which query keeps running, and who calls it.</li>
           <li><strong>Async hand-offs.</strong> Where the trail leaves this log.</li>
           <li><strong>Name the managed package.</strong> Whose code the missing time belongs to.</li>
@@ -372,13 +407,22 @@
         Google Drive permission at all. The parsing, the summary and the trace
         are all built there.
       </p>
+      <!-- 1 Oct: what each run leaves behind is in the user's own file, but a
+           privacy policy should still say what gets written, not only what
+           does not. -->
       <p>
-        <strong>Nothing is kept once the run finishes.</strong> An earlier
+        <strong>What it leaves in your spreadsheet.</strong> Each run adds its
+        own tabs: a Summary, a Trace, and a scrubbed copy of the log, plus a
+        small marker on those tabs so it can find them again if you choose
+        <em>Replace my last run</em>. They are yours to keep or delete.
+      </p>
+      <p>
+        <strong>Nothing is kept anywhere else.</strong> An earlier
         version held your pasted text in Google's per-document cache for six
         hours so you could re-run without re-pasting; that feature is gone and
         the cache went with it.
       </p>
-      <p class="updated">Last updated 19 September 2026 · Questions: <a href="mailto:support@saasylogs.com">support@saasylogs.com</a></p>
+      <p class="updated">Last updated 1 October 2026 · Questions: <a href="mailto:support@saasylogs.com">support@saasylogs.com</a></p>
     </section>
 
     <section class="legal-section" id="terms">
