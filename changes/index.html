@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saasy Logs — what has changed</title>
+<meta name="description" content="Every Saasy Logs release, newest first: what is new, what was fixed, what is known to be wrong, and what is being worked on next.">
+<link rel="canonical" href="https://saasylogs.com/changes/">
+<meta name="theme-color" content="#faf6f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17120f" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="/brand/favicon.svg?v=2">
+<link rel="icon" href="/brand/favicon.ico?v=2" sizes="any">
+<link rel="stylesheet" href="/styles.css?v=4">
+</head>
+<body>
+
+<!--
+  WHAT HAS CHANGED (#86), 1 Oct. Same shape as DwelLogs' /changes/.
+
+  THIS REPO IS PUBLIC AND THE APP REPO IS NOT. Entries describe what changed
+  for the person using the add-on, in plain words. Nothing here is copied
+  from commit messages, cards or internal notes, and no class, method or
+  object name from a real org ever appears.
+
+  KEEP IT CURRENT: every app release adds an entry at the top, in the same
+  push as the tag. The version is the one the About dialog shows, so a bug
+  report can name it; the short hash is the app commit it was tagged on.
+  A release missing here is worse than no page, because it reads as nothing
+  having changed.
+-->
+
+<div class="changes">
+  <p class="wordmark">
+    <a class="home" href="/"><img src="/brand/favicon.svg?v=2" width="26" height="26" alt=""><b>Saasy&nbsp;Logs</b></a>
+    <a class="top" href="/#status">What works today</a>
+  </p>
+
+  <h1>What has changed</h1>
+  <p class="lede">
+    Every release, newest first. The version matches the one in the add-on's
+    <strong>About</strong> box, so if something looks wrong you can say which
+    one you were on.
+  </p>
+
+  <section class="change-block">
+    <h2>Being worked on</h2>
+    <p>
+      The homepage keeps the list: <a href="/#status">what works today, what's
+      next, and what's wanted later</a>.
+    </p>
+  </section>
+
+  <section class="change-block">
+    <h2>Known, and not fixed yet</h2>
+    <ul>
+      <li><strong>Very large logs.</strong> Logs over about 10&nbsp;MB may not finish
+        inside Google's 6-minute limit for a single run.</li>
+      <li><strong>One log at a time.</strong> When a save hands work to a future,
+        queueable or batch job, that work is in a different log, and the two
+        aren't joined up yet.</li>
+      <li><strong>The object path isn't built yet.</strong> The code path shows which
+        trigger fired what; which records were touched, in order, is next.</li>
+      <li><strong>Limits in other languages.</strong> If your org isn't set to
+        English, the limits table says it couldn't read the numbers rather than
+        showing them.</li>
+      <li><strong>The scrub has no settings.</strong> It always replaces the text
+        of debug statements whole, even when that text is what you wanted to
+        send.</li>
+      <li><strong>Shared filters.</strong> Two people filtering the same Trace tab
+        at the same time change each other's view. A filter view you make in
+        Sheets (Data → Filter views) is yours alone.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.9.0 <span class="when">1 October 2026 · 462ffb1</span></h2>
+    <h3>New</h3>
+    <ul>
+      <li>Every run adds its own tabs (Summary, Trace and Scrubbed) named after
+        your label. Nothing already in your spreadsheet is overwritten, including
+        a tab of your own called Summary.</li>
+      <li><strong>Replace my last run</strong> reuses your previous run's tabs
+        instead of adding new ones. It only ever touches tabs the add-on made.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.8.0 <span class="when">1 October 2026 · 604a790</span></h2>
+    <h3>New</h3>
+    <ul>
+      <li>Every analysis also writes a scrubbed copy of the log, ready to send.
+        One paste does both.</li>
+    </ul>
+    <h3>Changed</h3>
+    <ul>
+      <li>The separate <em>Scrub a log for sharing</em> menu item is gone, since
+        Analyze now does it. The explanation of what scrubbing replaces and keeps
+        is in the About box.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.7.0 <span class="when">1 October 2026 · b57db60</span></h2>
+    <h3>New</h3>
+    <ul>
+      <li>Upload a <code>.log</code> file instead of pasting: <strong>Choose
+        file</strong>, or drop it on the dialog. The file name becomes the label
+        unless you've typed one.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.6.2 <span class="when">1 October 2026 · 6d4fff3</span></h2>
+    <h3>Fixed</h3>
+    <ul>
+      <li>The limits table only highlighted limits behind the boxes you'd
+        ticked, so a blown CPU limit could sit there unhighlighted. It now
+        highlights every limit the log actually used.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.6.1 <span class="when">29 September 2026 · 1c6c31e</span></h2>
+    <h3>Fixed</h3>
+    <ul>
+      <li>Record IDs are kept in the scrubbed copy wherever they appear. One
+        position in the log was still replacing them.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.6.0 <span class="when">29 September 2026 · a55e192</span></h2>
+    <h3>New</h3>
+    <ul>
+      <li>While a log is being read, the dialog counts the seconds, and after 15
+        it says large logs take a while. A slow run no longer looks like a dead one.</li>
+    </ul>
+    <h3>Fixed</h3>
+    <ul>
+      <li><em>What happened</em> now names a thrown exception, not only a fatal
+        error.</li>
+      <li>A transaction that died was sometimes recorded as only an exception,
+        when the error and the exception carried the same message.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.5.0 <span class="when">28 September 2026 · 25f5412</span></h2>
+    <h3>New</h3>
+    <ul>
+      <li><strong>The code path.</strong> A short map at the top of the Summary:
+        which trigger fired, what it set off, on which object, and how many
+        times.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.4.0 <span class="when">28 September 2026 · 184c327</span></h2>
+    <h3>Fixed</h3>
+    <ul>
+      <li>Any log you can analyse can now be scrubbed. There was a lower size
+        limit on scrubbing.</li>
+    </ul>
+    <h3>Changed</h3>
+    <ul>
+      <li>Unlogged gaps are one finding with the rest added up beneath it,
+        instead of five findings for one fact.</li>
+      <li>Shorter dialogs.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.3.0 <span class="when">28 September 2026 · 9a18435</span></h2>
+    <h3>Fixed</h3>
+    <ul>
+      <li>The same milliseconds were ranked twice, once as an unlogged gap and
+        once as time spent in code. They're one finding now.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.2.3 <span class="when">28 September 2026 · efdc4e0</span></h2>
+    <h3>Fixed</h3>
+    <ul>
+      <li>Lines in the scrubbed log were cut off at the edge of the first column.
+        The note about what was scrubbed now sits above the log.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.2.2 <span class="when">28 September 2026 · c6f6f96</span></h2>
+    <h3>Changed</h3>
+    <ul>
+      <li>The limits table is grouped by namespace, each group whole, with the
+        limits every namespace shares (CPU time and heap) first.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.2.1 <span class="when">25 September 2026 · 8b335f6</span></h2>
+    <h3>New</h3>
+    <ul>
+      <li>A scrubbed copy of the log for sharing, and a warning on the Summary
+        when the log holds emails or similar.</li>
+      <li>Three depths for the Trace (High, Medium, Low), and the sheet says
+        when two of them come out the same.</li>
+      <li>Namespace and Called From columns. Validation rules and workflow rules
+        are named, and triggers, classes, flows and workflows are told apart.</li>
+      <li>SOQL, SOSL, DML and callouts can each be shown or hidden. Hiding rows
+        never changes the totals.</li>
+    </ul>
+    <h3>Fixed</h3>
+    <ul>
+      <li>It refuses to print totals that can't be true, such as the same log
+        pasted in twice, and says so when it couldn't read the limits.</li>
+      <li>A second run in the same sheet showed the old results until you
+        reloaded the page.</li>
+    </ul>
+    <h3>Changed</h3>
+    <ul>
+      <li>The pasted log is no longer held in Google's cache for six hours.
+        That served a re-run feature which is gone.</li>
+    </ul>
+  </section>
+
+  <section class="release">
+    <h2>v0.1.0 <span class="when">14 September 2026 · 44975fa</span></h2>
+    <h3>New</h3>
+    <ul>
+      <li>First version. Paste a debug log into a Google Sheet and get a Summary
+        that opens in plain language, a ranked shortlist of findings, and the
+        full Trace, indented, in the order it ran.</li>
+    </ul>
+  </section>
+
+</div>
+
+<footer>
+  <nav aria-label="Footer">
+    <a href="/">Home</a>
+    <a href="/#status">Status</a>
+    <a href="https://salesforcegirl.hashnode.dev/">Blog</a>
+    <a href="/#privacy">Privacy</a>
+    <a href="mailto:support@saasylogs.com">Support</a>
+  </nav>
+</footer>
+
+</body>
+</html>
