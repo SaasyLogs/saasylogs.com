@@ -73,6 +73,32 @@
   </section>
 
   <section class="release">
+    <h2>v0.11.0 <span class="when">3 October 2026 · a43dd5d</span></h2>
+    <h3>New</h3>
+    <ul>
+      <li>Big logs run about three times faster. A 25&nbsp;MB log went from
+        136&nbsp;seconds to 44: the log is compressed before it is sent, and
+        the scrubbed copy is written at the same time as the analysis instead
+        of after it.</li>
+      <li>The Summary ends with a <strong>Run time</strong> line saying how
+        long each part took, matching what the dialog shows.</li>
+      <li>The code path and the method table give each value its own column:
+        kind, how many times it ran, total time and object; calls, self time,
+        total time, SOQL and DML.</li>
+    </ul>
+    <h3>Changed</h3>
+    <ul>
+      <li>Times in the tables stay in milliseconds (174,256&nbsp;ms rather than
+        174.26&nbsp;s), so a big number looks big next to a small one.</li>
+      <li>The Summary and Trace tabs end where their data does, with no spare
+        rows and columns.</li>
+      <li>File sizes count the way your Mac does, so the dialog and Finder
+        agree.</li>
+      <li>The About box fits without scrolling and links to this page.</li>
+    </ul>
+  </section>
+
+  <section class="release">
     <h2>v0.10.1 <span class="when">2 October 2026 · f7fe757</span></h2>
     <h3>Changed</h3>
     <ul>
