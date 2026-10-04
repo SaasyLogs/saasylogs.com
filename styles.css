@@ -432,6 +432,25 @@
   .change-block, .release { padding: 24px 0; border-top: 1px solid var(--border); }
   .change-block p { color: var(--text-muted); margin: 0; }
 
+  /* ---------------- the see page (/see/, 3 Oct) ---------------- */
+  .see { max-width: 60rem; }
+  .see-step { padding: 28px 0; border-top: 1px solid var(--border); }
+  .see-step p { color: var(--text-muted); max-width: 46rem; }
+  .see-step code { font-size: .9em; color: var(--text-main); }
+  .see h2 .n {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.8rem; height: 1.8rem; border-radius: 50%;
+    background: var(--accent); color: var(--on-accent); font-size: .95rem;
+  }
+  .see figure { margin: 18px 0 0; }
+  /* The screenshots are full-bleed by Google's rules; a hairline border
+     keeps a light screenshot from melting into a light page. */
+  .see figure img {
+    display: block; width: 100%; height: auto;
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .see-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+
   /* ---------------- legal ---------------- */
 
   .legal-section {
