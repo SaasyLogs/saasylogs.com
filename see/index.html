@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saasy Logs — see it on a real log</title>
+<meta name="description" content="One real Salesforce debug log, 168,714 lines from a bulk update that died on the CPU limit, and what Saasy Logs made of it, step by step.">
+<link rel="canonical" href="https://saasylogs.com/see/">
+<meta name="theme-color" content="#faf6f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17120f" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="/brand/favicon.svg?v=2">
+<link rel="icon" href="/brand/favicon.ico?v=2" sizes="any">
+<link rel="stylesheet" href="/styles.css?v=5">
+</head>
+<body>
+
+<!--
+  THE SEE PAGE (#91), 3 Oct.
+
+  One real log, start to finish. Every number on this page is copied from the
+  output of that one run (v0.11.0, label demo-cpu-blowout); none is rounded
+  into a nicer claim and none comes from anywhere else. If the screenshots are
+  retaken, re-read the numbers off the new run.
+
+  The log: a real 25 MB CPU-blowout log. Values, emails and record IDs are
+  scrubbed; the employer's name and two office-identifying profile names were
+  replaced. Class, flow and vendor names are as they were, on purpose: they
+  are common names, and they are what makes the screenshots read as real.
+
+  Claim only what the homepage's Now list says works. Async hand-offs, the
+  object path and many logs at once are Next, so they are not here.
+-->
+
+<div class="changes see">
+  <p class="wordmark">
+    <a class="home" href="/"><img src="/brand/favicon.svg?v=2" width="26" height="26" alt=""><b>Saasy&nbsp;Logs</b></a>
+    <a class="top" href="/#how">How it works</a>
+  </p>
+
+  <h1>See it on a real log</h1>
+  <p class="lede">
+    One real Salesforce debug log: 168,714 lines from a bulk update of Tasks
+    that died. This is what Saasy&nbsp;Logs made of it, in the order you would
+    see it.
+  </p>
+
+  <section class="see-step">
+    <h2><span class="n">1</span> Upload the log</h2>
+    <p>
+      Open a Google Sheet, start Saasy&nbsp;Logs from the Extensions menu, and
+      choose the <code>.log</code> file you downloaded from Salesforce. Or paste
+      it. It is read inside that spreadsheet.
+    </p>
+    <figure>
+      <img src="img/02-analyze-dialog.png" width="1280" height="800" loading="lazy"
+           alt="The Analyze dialog inside Google Sheets, with demo-cpu-blowout.log chosen and ready to analyze">
+    </figure>
+  </section>
+
+  <section class="see-step">
+    <h2><span class="n">2</span> It says what happened first</h2>
+    <p>
+      Before any table, a sentence: this transaction died on the Apex CPU time
+      limit, in <code>TriggerHandlerUtility.findTriggerRelations</code>. Under
+      it, the things worth knowing: seven workflow rules were evaluated 13,750
+      times and never matched, and 96% of the elapsed time has no log line
+      explaining it.
+    </p>
+    <p>
+      It also says when the log itself is incomplete. Salesforce discarded
+      35.8&nbsp;MB of this one, so any total that spans the gap is marked as
+      unreliable rather than reported as fact.
+    </p>
+    <figure>
+      <img src="img/03-summary-what-happened.png" width="1280" height="800" loading="lazy"
+           alt="The Summary tab: What happened, leading with the CPU limit failure, then ranked findings marked critical, warn and info">
+    </figure>
+  </section>
+
+  <section class="see-step">
+    <h2><span class="n">3</span> Then the path it took</h2>
+    <p>
+      Seven steps instead of 168,714 lines. The one that matters is
+      <code>TaskTrigger</code>: it ran 99 times, re-entering itself, for
+      174,256&nbsp;ms. That is the cause, and it is the thing nobody spots by
+      scrolling.
+    </p>
+    <p>
+      Below it, CPU time sits at 120% of its limit, in red. Limits are grouped
+      by namespace, so a managed package's usage is never mixed into yours.
+    </p>
+    <figure>
+      <img src="img/04-code-path-and-limits.png" width="1280" height="800" loading="lazy"
+           alt="The code path: AccountTrigger, ContactTrigger and flows, then TaskTrigger run 99 times; below, limits by namespace with CPU time at 120 percent">
+    </figure>
+  </section>
+
+  <section class="see-step">
+    <h2><span class="n">4</span> Every step, when you need it</h2>
+    <p>
+      The Trace tab lists every trigger, method, flow and query in the order it
+      ran, with the class that called it and the object it ran on. It is
+      an ordinary sheet: filter by kind, class or object to follow one thread
+      through the whole transaction.
+    </p>
+    <figure>
+      <img src="img/05-trace.png" width="1280" height="800" loading="lazy"
+           alt="The Trace tab: rows in order with time, kind, namespace, called from, class, method, object, an indented execution path and milliseconds">
+    </figure>
+  </section>
+
+  <section class="see-step">
+    <h2><span class="n">5</span> And a copy you can send</h2>
+    <p>
+      Every run also writes a scrubbed copy of the log on its own tab. Emails,
+      contact and account names, and the values the code printed are
+      replaced. Class, flow and profile names stay, so whoever you send it to
+      can still read it.
+    </p>
+    <figure>
+      <img src="img/06-scrubbed-copy.png" width="1280" height="800" loading="lazy"
+           alt="The Scrubbed tab: a note saying what was replaced, then the log line by line with values replaced and names kept">
+    </figure>
+  </section>
+
+  <section class="see-step">
+    <h2>What your own logs can show</h2>
+    <ul>
+      <li>A trigger re-entering itself, and how many times.</li>
+      <li>Workflow and validation rules that ran without ever matching.</li>
+      <li>Time no log line explains, and where the biggest gap sits.</li>
+      <li>Which limit was blown, namespace by namespace.</li>
+      <li>The methods that cost the most, by their own time and in total.</li>
+      <li>The same query shape running more than once.</li>
+      <li>When the log itself is incomplete, and what that does to the numbers.</li>
+    </ul>
+    <p class="see-cta">
+      <a href="/" class="cta-btn secondary">Back to the homepage</a>
+      <a href="mailto:support@saasylogs.com?subject=Saasy%20Logs%20access" class="cta-btn">Ask for access</a>
+    </p>
+  </section>
+</div>
+
+<footer>
+  <nav aria-label="Footer">
+    <a href="/">Home</a>
+    <a href="/#status">Status</a>
+    <a href="/changes/">What has changed</a>
+    <a href="https://salesforcegirl.hashnode.dev/">Blog</a>
+    <a href="/#privacy">Privacy</a>
+  </nav>
+</footer>
+
+</body>
+</html>
