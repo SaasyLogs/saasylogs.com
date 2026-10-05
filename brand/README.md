@@ -120,6 +120,7 @@ be ~30% smaller; regenerate with `--flavor=woff2` anywhere that has it.
 | `/apple-touch-icon.png` | iOS home screen (copy of favicon-180) |
 | `avatar-512.png` | GitHub org avatar, profile pictures |
 | `github-social-preview.png` (1280×640) | Repo Settings → Social preview |
+| `social/youtube-banner-2560x1440.png` (+ `.svg` source) | YouTube channel banner; readable content inside the 1546×423 all-devices safe area |
 | `github-profile-README.md` | Copy to the org's `.github` repo |
 | `/og-image.png` (1200×630) | Link previews for saasylogs.com |
 | `social/*.svg` + `.png` | Per-post blog and LinkedIn cards |
