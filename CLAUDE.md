@@ -128,11 +128,13 @@ had DNS aimed at GitHub instead.
 A red conflict warning in the forwarding menu means leftover DNS records are
 still present. Delete those, then re-submit the forward.
 
-**Trailing slash in "Forward Traffic To".** `sassylogs.com` currently produces
-`saasylogs.com//brand/README.md` — a double slash — where the other two
-produce a single one. Harmless (GitHub Pages serves it either way) but it
-creates a second URL for the same page. The target field has a trailing slash;
-enter it as `https://saasylogs.com` with none.
+**No trailing slash in "Forward Traffic To".** Porkbun joins the target and
+the requested path without checking for a slash between them, so a target of
+`https://saasylogs.com/` turns `/see/` into `saasylogs.com//see/`. Harmless
+(GitHub Pages serves it either way) but it is a second URL for the same page.
+`sassylogs.com` and `saasylog.com` both had it until 5 Oct; fixed by entering
+the target as `https://saasylogs.com`, and all three re-checked over http and
+https with a path.
 
 ## Brand
 
