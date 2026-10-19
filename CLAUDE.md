@@ -105,9 +105,43 @@ produce this 404. There is no configuration that rescues it.
 This is the domain most worth fixing: "Sassy" is the real English word and the
 one people will type.
 
+### Never park saasylogs.com itself
+
+The recipe below is for the three **typo** domains only. On 18 Oct
+saasylogs.com was parked by mistake (the wrong row in Domain Management), and
+the site went down: Porkbun swapped the GitHub records for its own
+(`pixie.porkbun.com`) and Link In Bio redirected everything to
+`saasylogs-com.l.ink`. Parking itself left TXT and MX alone, but both were
+lost in the clean-up afterwards, which broke mail to support@ and removed the
+record behind Google's domain verification, mid-OAuth-review. Check the domain
+name on the Details page before clicking anything.
+
+**The full record set, to restore saasylogs.com in one pass.** Turn Link In
+Bio off first and delete any URL forward on it; then:
+
+| Type | Host | Answer |
+|---|---|---|
+| A | *(blank)* | `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` (four records) |
+| AAAA | *(blank)* | `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153` (four records) |
+| CNAME | `www` | `saasylogs.github.io` |
+| TXT | *(blank)* | `google-site-verification=AdLUkuk_d9Man1CNjwXvuUVNhLgjQOJr8n0CVtFhDc0` |
+| TXT | *(blank)* | `v=spf1 include:_spf.porkbun.com ~all` |
+| MX | *(blank)* | `fwd1.porkbun.com`, priority 10 |
+| MX | *(blank)* | `fwd2.porkbun.com`, priority 20 |
+
+The verification TXT is what proves the domain to Google for Search Console
+and for OAuth branding; losing it can undo a verified consent screen. MX and
+SPF carry the Porkbun email forward behind support@saasylogs.com. No `blog`
+record: until it points at Hashnode, a `blog` CNAME to GitHub Pages is a
+subdomain anyone's Pages site could claim.
+
+Verify against Porkbun's own nameserver, not a public resolver, which can keep
+an empty answer cached for a while:
+`dig +short @curitiba.ns.porkbun.com saasylogs.com TXT` (and `MX`, `A`).
+
 ### The recipe that works
 
-Porkbun, per domain. Two of the three were already set this way; the broken one
+Typo domains only — see above. Porkbun, per domain. Two of the three were already set this way; the broken one
 had DNS aimed at GitHub instead.
 
 1. **Reset first if the domain has been fiddled with.** Domain Management →
